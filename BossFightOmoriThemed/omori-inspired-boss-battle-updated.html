@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMORI-Inspired Boss Battle</title>
+    <style>
+        body {
+            background: url('Alley.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        
+        #game-container {
+            position: relative;
+            width: 900px;
+            height: 700px;
+        }
+        
+        #message-box {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #000;
+            border: 2px solid #fff;
+            padding: 10px 20px;
+            text-align: center;
+            width: 400px;
+            z-index: 10;
+        }
+        
+        #player {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background-color: #000;
+            border: 2px solid #fff;
+            z-index: 5;
+            overflow: hidden;
+        }
+        
+        #player img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .boss {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background-color: #000;
+            border: 2px solid #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .boss-image-container {
+            width: 100%;
+            height: 70%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .boss-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .boss-label {
+            background-color: #000;
+            border: 2px solid #fff;
+            padding: 2px 10px;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .health-container {
+            width: 85%;
+            height: 20px;
+            background-color: #333;
+            border: 2px solid #fff;
+            margin-bottom: 5px;
+        }
+        
+        .health-bar {
+            height: 100%;
+            background-color: #f00;
+            width: 100%;
+            transition: width 0.3s;
+        }
+        
+        .energy-container {
+            width: 85%;
+            height: 15px;
+            background-color: #333;
+            border: 2px solid #fff;
+        }
+        
+        .energy-bar {
+            height: 100%;
+            background-color: #0af;
+            width: 100%;
+            transition: width 0.3s;
+        }
+        
+        .boss-stats {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #fff;
+        }
+        
+        #actions {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .action-button {
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        #player-health-container {
+            background-color: #333;
+            border: 2px solid #fff;
+            height: 20px;
+            width: 100%;
+        }
+        
+        #player-health-bar {
+            height: 100%;
+            background-color: #f00;
+            width: 100%;
+        }
+        
+        #game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 100;
+        }
+        
+        #game-over h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        
+        #restart-button {
+            padding: 10px 20px;
+            background-color: #fff;
+            color: #000;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        /* Minigame styles */
+        #minigame-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 50;
+        }
+        
+        #true-false-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            background-color: #000;
+            border: 2px solid #fff;
+            padding: 20px;
+            width: 500px;
+        }
+        
+        #true-false-question {
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        #true-false-buttons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .true-false-button {
+            padding: 10px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #000;
+            border: 2px solid #fff;
+            color: #fff;
+        }
+        
+        #reaction-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            background-color: #000;
+            border: 2px solid #fff;
+            padding: 20px;
+            width: 500px;
+        }
+        
+        #reaction-bar-container {
+            width: 400px;
+            height: 30px;
+            background-color: #333;
+            border: 2px solid #fff;
+            position: relative;
+        }
+        
+        #reaction-target {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        #reaction-cursor {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #ff0;
+        }
+        
+        #reaction-instructions {
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .minigame-results {
+            font-size: 24px;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    <style>
+        #start-dialog {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 150;
+        }
+        
+        #start-dialog-content {
+            background-color: #000;
+            border: 2px solid #fff;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 400px;
+        }
+        
+        #start-dialog-text {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        #start-button {
+            padding: 10px 40px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #000;
+            border: 2px solid #fff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+
+        <div id="start-dialog">
+            <div id="start-dialog-content">
+                <div id="start-dialog-text">You were on a walk. Suddenly, you get cornered from ALL SIDES by 4 masked people.</div>
+                <div id="start-dialog-text">You feel like your gonna have a bad time.</div>
+
+                <div id="start-dialog-text">-----------------------</div>
+                <button id="start-button">Continu... What, there's boss music?! </button>
+                <div id="start-dialog-text">-----------------------</div>
+
+                <div id="start-dialog-text">Tip: Turn On Your Volume.</div>
+            </div>
+        </div>
+
+        <audio id="bgm" src="Main Theme (CD Version) - Bad Piggies.mp3" loop autoplay></audio>
+        <div id="message-box">POV: You are getting jumped! UH OH!</div>
+        
+        <!-- Player -->
+        <div id="player">
+            <img src="PrimaryKeyProtagonist.gif" alt="Player Character">
+        </div>
+        
+        <!-- Bosses -->
+        <div class="boss" id="boss1" style="top: 39px; left: 50%; transform: translateX(-50%);">
+            <div class="boss-label">Crook1</div>
+            <div class="boss-image-container">
+                <img class="boss-image" src="Crook1.gif" alt="Boss 1">
+            </div>
+            <div class="health-container">
+                <div class="health-bar" id="boss1-health"></div>
+            </div>
+            <div class="energy-container">
+                <div class="energy-bar" id="boss1-energy"></div>
+            </div>
+            <div class="boss-stats" id="boss1-stats">50/50</div>
+        </div>
+        
+        <div class="boss" id="boss2" style="top: 50%; left: 200px; transform: translateY(-50%) translateX(-100%);">
+            <div class="boss-label">Crook2</div>
+            <div class="boss-image-container">
+                <img class="boss-image" src="Crook2.gif" alt="Boss 2">
+            </div>
+            <div class="health-container">
+                <div class="health-bar" id="boss2-health"></div>
+            </div>
+            <div class="energy-container">
+                <div class="energy-bar" id="boss2-energy"></div>
+            </div>
+            <div class="boss-stats" id="boss2-stats">50/50</div>
+        </div>
+        
+        <div class="boss" id="boss3" style="top: 50%; right: 200px; transform: translateY(-50%) translateX(100%);">
+            <div class="boss-label">Crook3</div>
+            <div class="boss-image-container">
+                <img class="boss-image" src="Crook3.gif" alt="Boss 3">
+            </div>
+            <div class="health-container">
+                <div class="health-bar" id="boss3-health"></div>
+            </div>
+            <div class="energy-container">
+                <div class="energy-bar" id="boss3-energy"></div>
+            </div>
+            <div class="boss-stats" id="boss3-stats">50/50</div>
+        </div>
+        
+        <div class="boss" id="boss4" style="bottom: 50px; left: 50%; transform: translateX(-50%) translateY(100%);">
+            <div class="boss-label">Crook4</div>
+            <div class="boss-image-container">
+                <img class="boss-image" src="Crook4.gif" alt="Boss 4">
+            </div>
+            <div class="health-container">
+                <div class="health-bar" id="boss4-health"></div>
+            </div>
+            <div class="energy-container">
+                <div class="energy-bar" id="boss4-energy"></div>
+            </div>
+            <div class="boss-stats" id="boss4-stats">50/50</div>
+        </div>
+        
+        <!-- Player Action Menu -->
+        <div id="actions">
+            <div id="action-buttons" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <div class="action-button" id="fight" style="flex: 1; background: linear-gradient(to right, #ff0000, #ff7300, #ffff00); border: 2px solid #fff; color: #fff; text-shadow: 2px 2px 2px #000;">ATTACK</div>
+                <div class="action-button" id="defend" style="flex: 1; background: linear-gradient(to right, #0077ff, #00a3ff, #00ffff); border: 2px solid #fff; color: #fff; text-shadow: 2px 2px 2px #000;">DEFEND</div>
+            </div>
+            <div id="player-health-container">
+                <div id="player-health-bar"></div>
+            </div>
+        </div>
+        
+        <!-- Game Over Screen -->
+        <div id="game-over">
+            <h2 id="game-over-message"></h2>
+            <button id="restart-button">Play Again</button>
+        </div>
+        
+        <!-- Minigame Container -->
+        <div id="minigame-container">
+            <!-- True/False Minigame -->
+            <div id="true-false-container">
+                <div id="true-false-question">Is the sky blue?</div>
+                <div id="true-false-buttons">
+                    <button class="true-false-button" id="true-button">TRUE</button>
+                    <button class="true-false-button" id="false-button">FALSE</button>
+                </div>
+                <div id="true-false-result" class="minigame-results"></div>
+            </div>
+            
+            <!-- Reaction Minigame -->
+            <div id="reaction-container">
+                <div id="reaction-instructions">Press SPACE when the cursor is in the target zone! Ten percent chance to get impossible speed.</div>
+                <div id="reaction-bar-container">
+                    <div id="reaction-target"></div>
+                    <div id="reaction-cursor"></div>
+                </div>
+                <div id="reaction-result" class="minigame-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        const gameState = {
+            player: {
+                health: 100,
+                maxHealth: 100,
+                damage: 10
+            },
+            bosses: [
+                { id: 1, health: 50, maxHealth: 50, energy: 20, maxEnergy: 20, damage: 2 },
+                { id: 2, health: 50, maxHealth: 50, energy: 20, maxEnergy: 20, damage: 3 },
+                { id: 3, health: 50, maxHealth: 50, energy: 20, maxEnergy: 20, damage: 2 },
+                { id: 4, health: 50, maxHealth: 50, energy: 20, maxEnergy: 20, damage: 3 }
+            ],
+            currentTurn: 'player',
+            bossesDefeated: 0,
+            gameOver: false,
+            minigameActive: false,
+            bossesWeakened: false,
+            currentMinigame: null,
+            selectedBoss: null,
+            currentAction: null // 'attack' or 'defend'
+        };
+
+        // DOM Elements
+        const messageBox = document.getElementById('message-box');
+        const fightButton = document.getElementById('fight');
+        const playerHealthBar = document.getElementById('player-health-bar');
+        const gameOverScreen = document.getElementById('game-over');
+        const gameOverMessage = document.getElementById('game-over-message');
+        const restartButton = document.getElementById('restart-button');
+        const minigameContainer = document.getElementById('minigame-container');
+        const trueFalseContainer = document.getElementById('true-false-container');
+        const reactionContainer = document.getElementById('reaction-container');
+        const trueFalseQuestion = document.getElementById('true-false-question');
+        const trueFalseResult = document.getElementById('true-false-result');
+        const trueButton = document.getElementById('true-button');
+        const falseButton = document.getElementById('false-button');
+        const reactionResult = document.getElementById('reaction-result');
+        const reactionCursor = document.getElementById('reaction-cursor');
+
+        // True/False Questions
+        const trueFalseQuestions = [
+            { question: "Gojo wins against Goku.", answer: false },
+            { question: "DNA stands for Deoxyribonucleic Acid.", answer: true },
+            { question: "Oxygen is the most abundant element in Earth's atmosphere.", answer: false },
+            { question: "Does Nuno weaken his aura on purpose with glasses?", answer: true },
+            { question: "Who does this mugging even benefit? Robbers?", answer: true },
+            { question: "The games made by row three are: Portnite, Gamehub and OnlyGames", answer: true },
+            { question: "Did Marc clutch when asked about the original name for Portnite / Python themed Fortnite?", answer: true },
+            { question: "Is it tradition to go to Waffle House after prom?", answer: true },
+            { question: "During this project, it was Henry who downloaded an Offender List as a PDF.", answer: false },
+            { question: "Last vibecode, Vir's game had a guest appearance featuring Henry.", answer: false },
+            { question: "Last vibecode, Tyler Ellis did an RPG game.", answer: false },
+            { question: "Gavin was at class at 4/30/2025 at 8:05 AM.", answer: false },
+            { question: "The Biotechnology field is overrated.", answer: true },
+            { question: "Is the Primary Key a person?", answer: true },
+            { question: "Will something like this game happen to you at 11:23 AM?", answer: false },
+            { question: "Does Nuno play Chipp in Guilty Gear Strive?", answer: true },
+            { question: "Does Marc co-main May in Guilty Gear Strive?", answer: true },
+            { question: "Can Tody play Fortnite on school laptop?", answer: true },
+            { question: "An item that fell on Nuno's head was a metal bar from the window celling?", answer: true },
+            { question: "Did everyone pass the Python IT Specalist Certification try one?", answer: true },
+            { question: "They played Fetty Wap at Prom?", answer: true },
+            { question: "Yunus brought a mug of coffee in class from the teachers lounge once.", answer: true },
+            { question: "Idris once brought in a coconut to first period once.", answer: true },
+            { question: "Syed once brought in Raising Canes on 3/5/2024 at 11:00 AM.", answer: false }
+        ];
+
+        // Update health bars
+        function updateHealthBars() {
+            // Update player health
+            playerHealthBar.style.width = `${(gameState.player.health / gameState.player.maxHealth) * 100}%`;
+            
+            // Update boss health bars
+            gameState.bosses.forEach(boss => {
+                const healthBar = document.getElementById(`boss${boss.id}-health`);
+                const energyBar = document.getElementById(`boss${boss.id}-energy`);
+                const statsText = document.getElementById(`boss${boss.id}-stats`);
+                
+                healthBar.style.width = `${(boss.health / boss.maxHealth) * 100}%`;
+                energyBar.style.width = `${(boss.energy / boss.maxEnergy) * 100}%`;
+                statsText.textContent = `${boss.health}/${boss.maxHealth}`;
+                
+                // Hide defeated bosses
+                if (boss.health <= 0) {
+                    document.getElementById(`boss${boss.id}`).style.opacity = 0.3;
+                }
+            });
+        }
+
+        document.body.addEventListener('click', function () {
+    const bgm = document.getElementById('bgm');
+    if (bgm.paused) {
+        bgm.play();
+    }
+});
+
+
+        // Select a boss to attack
+        function selectBossToAttack() {
+            // Find alive bosses
+            const aliveBosses = gameState.bosses.filter(boss => boss.health > 0);
+            
+            if (aliveBosses.length === 0) {
+                endGame(true);
+                return null;
+            }
+            
+            // Select random boss to attack
+            return aliveBosses[Math.floor(Math.random() * aliveBosses.length)];
+        }
+
+        // Start minigame
+        function startMinigame(actionType) {
+            if (gameState.gameOver) return;
+            
+            gameState.selectedBoss = selectBossToAttack();
+            if (!gameState.selectedBoss) return;
+            
+            gameState.minigameActive = true;
+            gameState.currentAction = actionType; // Store whether this is an attack or defense action
+            minigameContainer.style.display = 'flex';
+            
+            // Randomly select which minigame to play
+            if (Math.random() < 0.5) {
+                startTrueFalseMinigame();
+            } else {
+                startReactionMinigame();
+            }
+        }
+
+        // Start True/False minigame
+        function startTrueFalseMinigame() {
+            gameState.currentMinigame = 'trueFalse';
+            trueFalseContainer.style.display = 'flex';
+            reactionContainer.style.display = 'none';
+            
+            // Select a random question
+            const questionIndex = Math.floor(Math.random() * trueFalseQuestions.length);
+            const question = trueFalseQuestions[questionIndex];
+            
+            trueFalseQuestion.textContent = question.question;
+            trueFalseResult.textContent = '';
+            
+            // Set the correct answer
+            gameState.correctAnswer = question.answer;
+        }
+
+        // Handle True/False minigame result
+        function handleTrueFalseResult(playerAnswer) {
+            const isCorrect = playerAnswer === gameState.correctAnswer;
+            
+            if (isCorrect) {
+                trueFalseResult.textContent = 'Correct!';
+                setTimeout(() => completeMinigame(true), 1500);
+            } else {
+                trueFalseResult.textContent = 'Wrong! You failed your action.';
+                setTimeout(() => completeMinigame(false), 1500);
+            }
+        }
+
+        // Start Reaction minigame
+        function startReactionMinigame() {
+            gameState.currentMinigame = 'reaction';
+            trueFalseContainer.style.display = 'none';
+            reactionContainer.style.display = 'flex';
+            reactionResult.textContent = '';
+            
+            // Reset cursor position
+            reactionCursor.style.left = '0px';
+            
+            // Start the cursor moving
+            let direction = 1;
+            let position = 0;
+            //const speed = 5;
+            let speed;
+
+            if (Math.random() < 0.10) { // 10% chance ( funny but somewhat rare)
+                speed = 45; //This makes the minigame really impossible which is really funny
+            } else {
+                speed = Math.floor(Math.random() * 7) + 5; // 5 to 10 inclusive
+                //speed = 15;
+
+            }
+
+            const maxPosition = 400 - 4; // container width - cursor width
+            
+            gameState.reactionInterval = setInterval(() => {
+                position += direction * speed;
+                
+                // Reverse direction at edges
+                if (position >= maxPosition || position <= 0) {
+                    direction *= -1;
+                }
+                
+                reactionCursor.style.left = `${position}px`;
+            }, 16);
+            
+            // Set up spacebar listener
+            document.addEventListener('keydown', handleReactionKeypress);
+        }
+
+        // Handle reaction minigame keypress
+        function handleReactionKeypress(e) {
+            if (e.code !== 'Space' || gameState.currentMinigame !== 'reaction') return;
+            
+            // Remove the event listener to prevent multiple keypresses
+            document.removeEventListener('keydown', handleReactionKeypress);
+            
+            // Stop the cursor
+            clearInterval(gameState.reactionInterval);
+            
+            // Get cursor position
+            const cursorPosition = parseInt(reactionCursor.style.left);
+            const targetLeft = 185; // center position - half of target width
+            const targetRight = 215; // center position + half of target width
+            
+            // Check if the cursor is in the target zone
+            if (cursorPosition >= targetLeft && cursorPosition <= targetRight) {
+                reactionResult.textContent = 'Perfect hit!';
+                setTimeout(() => completeMinigame(true), 1500);
+            } else {
+                reactionResult.textContent = 'Missed!';
+                setTimeout(() => completeMinigame(false), 1500);
+            }
+        }
+
+        // Complete the minigame and process results
+        function completeMinigame(success) {
+            gameState.minigameActive = false;
+            minigameContainer.style.display = 'none';
+            trueFalseContainer.style.display = 'none';
+            reactionContainer.style.display = 'none';
+            
+            // Remove event listener if it was a reaction game
+            if (gameState.currentMinigame === 'reaction') {
+                document.removeEventListener('keydown', handleReactionKeypress);
+                clearInterval(gameState.reactionInterval);
+            }
+            
+            // Handle different actions based on whether it was an attack or defense
+            if (gameState.currentAction === 'attack') {
+                // Apply damage based on minigame result
+                const damageMultiplier = success ? 2 : 1;
+                let damage = Math.floor(gameState.player.damage * damageMultiplier * (0.8 + Math.random() * 0.4));
+                
+                // Apply damage to the selected boss
+                gameState.selectedBoss.health -= damage;
+                
+                if (gameState.selectedBoss.health <= 0) {
+                    gameState.selectedBoss.health = 0;
+                    gameState.bossesDefeated++;
+                    messageBox.textContent = `Critical hit! You defeated a boss! ${4 - gameState.bossesDefeated} remaining.`;
+                    
+                    // Check if all bosses are defeated
+                    if (gameState.bossesDefeated === 4) {
+                        updateHealthBars();
+                        endGame(true);
+                        return;
+                    }
+                } else {
+                    if (success) {
+                        messageBox.textContent = `Critical hit! You did ${damage} damage!`;
+                    } else {
+                        messageBox.textContent = `You attack a boss for ${damage} damage!`;
+                    }
+                }
+            } else if (gameState.currentAction === 'defend') {
+                // Apply defense effect based on minigame result
+                if (success) {
+                    gameState.bossesWeakened = true;
+                    messageBox.textContent = "Success! You weaken the bosses' attacks for the next turn!";
+                } else {
+                    messageBox.textContent = "You failed to set up a proper defense!";
+                }
+            }
+            
+            updateHealthBars();
+            
+            // Switch to boss turn after a delay
+            setTimeout(() => switchToBossTurn(), 1000);
+        }
+
+        // Switch to boss turn
+        function switchToBossTurn() {
+            gameState.currentTurn = 'boss';
+            bossAttack();
+        }
+
+        // Bosses attack the player
+        function bossAttack() {
+            if (gameState.gameOver) return;
+            
+            // Only alive bosses attack
+            const aliveBosses = gameState.bosses.filter(boss => boss.health > 0);
+            
+            if (aliveBosses.length === 0) {
+                gameState.currentTurn = 'player';
+                messageBox.textContent = 'Your turn!';
+                return;
+            }
+            
+            // Each alive boss attacks
+            let totalDamage = 0;
+            aliveBosses.forEach(boss => {
+                let damage = Math.floor(boss.damage * (0.8 + Math.random() * 0.4));
+                
+                // Apply weakness if player chose to weaken bosses
+                if (gameState.bossesWeakened) {
+                    damage = Math.floor(damage * 0.1);
+                }
+                
+                totalDamage += damage;
+            });
+            
+            gameState.player.health -= totalDamage;
+            
+            // Reset boss weakness
+            gameState.bossesWeakened = false;
+            
+            if (gameState.player.health <= 0) {
+                gameState.player.health = 0;
+                endGame(false);
+                return;
+            } else {
+                if (gameState.bossesWeakened) {
+                    messageBox.textContent = `The weakened bosses attack for only ${totalDamage} damage!`;
+                } else {
+                    messageBox.textContent = `The bosses attack you for ${totalDamage} damage!`;
+                }
+            }
+            
+            updateHealthBars();
+            
+            // Switch back to player turn
+            setTimeout(() => {
+                gameState.currentTurn = 'player';
+                messageBox.textContent = 'Your turn!';
+            }, 1000);
+        }
+
+        // End the game
+        function endGame(playerWon) {
+            gameState.gameOver = true;
+            
+            if (playerWon) {
+                gameOverMessage.textContent = 'You Won!';
+            } else {
+                gameOverMessage.textContent = 'Game Over';
+            }
+            
+            gameOverScreen.style.display = 'flex';
+        }
+
+        // Restart the game
+        function restartGame() {
+            // Reset player
+            gameState.player.health = gameState.player.maxHealth;
+            
+            // Reset bosses
+            gameState.bosses.forEach(boss => {
+                boss.health = boss.maxHealth;
+                boss.energy = boss.maxEnergy;
+                document.getElementById(`boss${boss.id}`).style.opacity = 1;
+            });
+            
+            // Reset game state
+            gameState.currentTurn = 'player';
+            gameState.bossesDefeated = 0;
+            gameState.gameOver = false;
+            gameState.minigameActive = false;
+            gameState.bossesWeakened = false;
+            gameState.currentAction = null;
+            
+            // Update UI
+            updateHealthBars();
+            messageBox.textContent = 'POV: You are getting jumped! Uh oh!';
+            gameOverScreen.style.display = 'none';
+        }
+
+        // Event listeners
+        fightButton.addEventListener('click', () => {
+            if (gameState.currentTurn === 'player' && !gameState.gameOver && !gameState.minigameActive) {
+                startMinigame('attack');
+            }
+        });
+
+        document.getElementById('defend').addEventListener('click', () => {
+            if (gameState.currentTurn === 'player' && !gameState.gameOver && !gameState.minigameActive) {
+                startMinigame('defend');
+            }
+        });
+
+        restartButton.addEventListener('click', restartGame);
+        
+        trueButton.addEventListener('click', () => {
+            if (gameState.currentMinigame === 'trueFalse') {
+                handleTrueFalseResult(true);
+            }
+        });
+        
+        falseButton.addEventListener('click', () => {
+            if (gameState.currentMinigame === 'trueFalse') {
+                handleTrueFalseResult(false);
+            }
+        });
+
+        // Start dialog functionality
+        document.getElementById('start-button').addEventListener('click', function() {
+            // Play the BGM when OK is clicked
+            const bgm = document.getElementById('bgm');
+            bgm.play();
+            
+
+            // gameOverScreen.style.display = 'none';
+            // Don't show start dialog on restart
+            document.getElementById('start-dialog').style.display = 'none';
+            
+        });
+
+        // Initialize game
+        updateHealthBars();
+    </script>
+</body>
+</html>
