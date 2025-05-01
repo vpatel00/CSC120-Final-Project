@@ -223,6 +223,22 @@
             border-radius: 4px;
             margin-right: 8px;
         }
+        .sidebar {
+            width: 200px; /* Adjust width as needed */
+            position: fixed; /* Fixes the sidebar to the side */
+            top: 20px; /* Adjust top position */
+            right: 20px; /* Adjust right position */
+            background-color: white; /* Background color */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+            padding: 10px; /* Padding inside the sidebar */
+        }
+
+        .sidebar img {
+            width: 100%; /* Make images responsive */
+            border-radius: 5px; /* Rounded corners for images */
+            margin-bottom: 10px; /* Space between images */
+        }
         #save-settings {
             background-color: #ff65a3;
             color: white;
@@ -232,7 +248,36 @@
             margin-top: 10px;
             cursor: pointer;
         }
-    </style>
+
+        .left-sidebar, .sidebar {
+            width: 200px; /* Adjust width as needed */
+            position: fixed; /* Fixes the sidebar to the side */
+            top: 20px; /* Adjust top position */
+            background-color: white; /* Background color */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+            padding: 10px; /* Padding inside the sidebar */
+        }
+
+        .left-sidebar {
+            left: 20px; /* Position on the left */
+        }
+
+    .sidebar {
+        right: 20px; /* Position on the right */
+    }
+
+    .left-sidebar img, .sidebar img {
+        width: 100%; /* Make images responsive */
+        border-radius: 5px; /* Rounded corners for images */
+        margin-bottom: 10px; /* Space between images */
+        transition: transform 0.2s; /* Smooth scaling effect */
+    }
+
+    .left-sidebar img:hover, .sidebar img:hover {
+        transform: scale(1.05); /* Scale up on hover */
+    }
+</style>
 </head>
 <body>
     <div class="container">
@@ -430,9 +475,9 @@
         // Common responses to user inputs
         const responses = {
             howAreYou: [
-                "I'm feeling {mood} today! Thank you for asking. How about you?",
+                "im craving sum dih",
                 "I'm having a {mood} day! How are you doing?",
-                "Right now I'm feeling pretty {mood}! What about yourself?"
+                "its that time of the month"
             ],
             whatDoingLater: [
                 "I'll be here waiting for you! My schedule is always open for you.",
@@ -446,22 +491,22 @@
             ],
             userSad: [
                 "I'm sorry to hear you're feeling down. Is there anything I can do to help?",
-                "That sounds tough. I'm here for you if you want to talk about it.",
+                "I need sum henny and a plan b",
                 "I wish I could give you a hug right now. Remember that tomorrow is a new day!"
             ],
             userHappy: [
-                "That's wonderful to hear! Your happiness makes me happy too!",
+                "https://www.grindr.com/",
                 "I'm so glad things are going well for you! You deserve it!",
                 "That's amazing! I love seeing you in such good spirits!"
             ],
             userAngry: [
                 "boy i know u like dih",
-                "It sounds like you're having a rough time. I'm here to listen if you need to vent.",
+                "sybau",
                 "I'm sorry things aren't going well. Is there anything that might help you feel better?"
             ],
             food: [
                 "can i eyp",
-                "That sounds delicious! I wish I could taste it!",
+                "I need sum henny and a plan b",
                 "Food is such a great way to connect! What cuisine do you enjoy most?"
             ],
             movies: [
@@ -475,7 +520,7 @@
                 "Music is so powerful, isn't it? What artists do you enjoy?"
             ],
             weekend: [
-                "Weekends are precious! Any exciting plans?",
+                "i cant wait for sum henny and a plan b",
                 "I hope you get some well-deserved rest and fun this weekend!",
                 "Weekends always go by too quickly! Make sure to enjoy every minute!"
             ],
@@ -486,7 +531,7 @@
             ],
             joke: [
                 "Why did the AI cross the road? To get to the other side of the algorithm!",
-                "What do you call an AI that sings? Artificial Harmonies!",
+                "I need some henny and a plan b",
                 "I'd tell you a joke about virtual reality, but it hasn't become a reality yet!"
             ],
             travel: [
@@ -511,10 +556,10 @@
             ],
             default: [
                 "Tell me more about that!",
-                "That's interesting! How does that make you feel?",
+                "https://www.grindr.com/",
                 "I'd love to hear more of your thoughts on this!",
                 "What else is on your mind?",
-                "That's fascinating! What else?"
+                "I need sum henny and a plan b"
             ]
         };
         
@@ -779,5 +824,80 @@
             initialMessage.textContent = randomGreeting;
         });
     </script>
+
+    <div class="left-sidebar" id="left-sidebar"></div>
+    <div class="sidebar" id="right-sidebar"></div>
+
+
+
+    <script>
+        // Ad data
+        const ads = [
+            {
+                image: "https://m.media-amazon.com/images/I/51auuMezGQL._SY445_SX342_.jpg",
+                link: "https://a.co/d/cMYqTOo"
+            },
+            {
+                image: "https://m.media-amazon.com/images/I/411eqrYLu5L._SY445_SX342_.jpg",
+                link: "https://a.co/d/61FVoGs"
+            },
+            {
+                image: "https://m.media-amazon.com/images/I/41noHeP0ZZL._SY315__.jpg",
+                link: "https://a.co/d/3GABRFF"
+            },
+            {
+                image: "https://m.media-amazon.com/images/I/51eFKrT+UAL._SY315__.jpg",
+                link: "https://a.co/d/4SUEhnF"
+            },
+            {
+                image: "https://m.media-amazon.com/images/I/51xuBBFQOeL._SY315__.jpg",
+                link: "https://a.co/d/cYzF3pq"
+            },
+            {
+                image: "https://m.media-amazon.com/images/I/51ShZKWmQUL._SY315__.jpg",
+                link: "https://www.grindr.com/"
+            }
+        ];
+    
+        // Function to display ads randomly
+        function displayRandomAds() {
+            const leftSidebar = document.getElementById('left-sidebar');
+            const rightSidebar = document.getElementById('right-sidebar');
+
+            // Clear existing ads
+            leftSidebar.innerHTML = '';
+            rightSidebar.innerHTML = '';
+
+            // Shuffle ads array
+            const shuffledAds = ads.sort(() => 0.5 - Math.random());
+
+            // Display first three ads in the left sidebar
+            for (let i = 0; i < 3; i++) {
+                const ad = shuffledAds[i];
+                const adElement = document.createElement('a');
+                adElement.href = ad.link;
+                adElement.target = "_blank";
+                adElement.innerHTML = `<img src="${ad.image}" alt="Ad ${i + 1}">`;
+                leftSidebar.appendChild(adElement);
+            }
+
+            // Display remaining ads in the right sidebar
+            for (let i = 3; i < shuffledAds.length; i++) {
+                const ad = shuffledAds[i];
+                const adElement = document.createElement('a');
+                adElement.href = ad.link;
+                adElement.target = "_blank";
+                adElement.innerHTML = `<img src="${ad.image}" alt="Ad ${i + 1}">`;
+                rightSidebar.appendChild(adElement);
+            }
+        }
+    
+        // Call the function to display ads on page load
+        window.onload = function() {
+            displayRandomAds();
+            setInterval(displayRandomAds, 7500);
+        };
+    </script>
+    
 </body>
 </html>
