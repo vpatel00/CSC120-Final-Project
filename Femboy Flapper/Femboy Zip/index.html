@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Femboy Flapper</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1 id="gameTitle">Femboy Flapper</h1>
+  <img src="assets/femboy.png" id="bird" width="32" height="32">
+  <img src="assets/omni_man.png" id="pipe" width="32" height="32">
+
+  <!-- Start Screen -->
+  <div id="startScreen">
+    <h1>Femboy Flapper</h1>
+    <button id="startBtn">Start Game</button>
+  </div>
+
+  <!-- Win Screen -->
+  <div id="winScreen">
+    <h1>You Win!</h1>
+    <img id="qrCode" src="assets/qr-code.png" alt="Scan to claim your prize!">
+  </div>
+
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <button id="restartBtn" onclick="restartGame()">Play Again</button>
+  <script src="script.js">
+    // Get the video
+    var video = document.getElementById("myVideo");
+
+    // Get the button
+    var btn = document.getElementById("myBtn");
+
+    // Pause and play the video, and change the button text
+    function myFunction() {
+        if (video.paused) {
+            video.play();
+            btn.innerHTML = "Pause";
+        } else {
+            video.pause();
+            btn.innerHTML = "Play";
+        }
+    }
+  </script>
+</body>
+</html>

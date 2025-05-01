@@ -1,0 +1,119 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('assets/Femboy_Background_Wallpaper.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+canvas {
+    display: block;
+    background-image: url('assets/Femboy_PC_Background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 8px solid black;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+ 
+#restartBtn {
+    padding: 20px;
+    font-size: 24px;
+    color: #fff;
+    background-color: black;
+    background-size: contain;
+    border: 2px white;
+    border-style: dashed;
+    display: none;
+    cursor: pointer;
+    margin-top: 20px;
+    font-weight: bold;
+}
+ 
+#restartBtn:hover {
+    background-color: black;
+}
+ 
+#bird,
+#pipe {
+    display: none;
+}
+ 
+#gameTitle {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 36px;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    text-shadow: 2px 2px 4px #000;
+    z-index: 1;
+}
+ 
+#startScreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    z-index: 10;
+}
+
+#startScreen h1 {
+    font-size: 48px;
+    margin-bottom: 30px;
+    color: white;
+    text-shadow: 2px 2px 4px #000;
+}
+
+#startBtn {
+    padding: 15px 30px;
+    font-size: 24px;
+    color: #fff;
+    background-color: #333;
+    border: 2px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+
+#startBtn:hover {
+    background-color: #555;
+}
+ 
+#winScreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    display: none;
+    z-index: 10;
+}
+
+#winScreen h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+ 
+#qrCode {
+    width: 200px;
+    height: 200px;
+}
