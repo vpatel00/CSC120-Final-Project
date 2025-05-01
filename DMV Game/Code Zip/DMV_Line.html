@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMV Line Survival Simulator</title>
+    <link rel="stylesheet" href="DMV_Line.css">
+</head>
+<body>
+    <div class="start-screen" id="startScreen">
+        <h1>DMV Line Survival Simulator</h1>
+        <button id="startButton">Start Game</button>
+    </div>
+
+    <div class="game-container" id="gameContainer" style="display: none;">
+        <header>
+            <h1>DMV Line Survival Simulator</h1>
+            <div class="game-stats">
+                <div class="stat" id="patience">Patience: 100</div>
+                <div class="stat" id="sanity">Sanity: 100</div>
+                <div class="stat" id="battery">Battery: 100%</div>
+                <div class="stat" id="money">Money: $20</div>
+                <div class="stat" id="bladder">Bladder: 50%</div>
+                <div class="stat" id="position">Position: 50</div>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <div class="line-visualization">
+                    <div class="player" id="player">
+                        <img src="player.png" alt="Player" id="playerImage">
+                    </div>
+                    <div class="counter" id="counter">🏢</div>
+                </div>
+                <div class="current-number" id="currentNumber">
+                    Now Serving: <span id="servingNumber">B257</span>
+                </div>
+                <div class="your-number" id="yourNumber">
+                    Your Number: <span id="playerNumber">D412</span>
+                </div>
+            </div>
+
+            <div class="action-panel">
+                <h2>Actions</h2>
+                <div class="action-buttons">
+                    <button id="wait">Wait Patiently</button>
+                    <button id="complain">Complain</button>
+                    <button id="useBathroom">Use Bathroom</button>
+                    <button id="usePhone">Use Phone</button>
+                    <button id="buySnack">Buy Snack</button>
+                    <button id="bribe">Attempt Bribe</button>
+                </div>
+            </div>
+
+            <div class="inventory-panel">
+                <h2>Inventory</h2>
+                <div class="items" id="inventory">
+                    <!-- Items will be added dynamically -->
+                </div>
+            </div>
+
+            <div class="event-log" id="eventLog">
+                <h2>Events</h2>
+                <div class="log-content">
+                    <!-- Events will be added dynamically -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- This is a joke because you can't win-->>
+    <div class="win-screen" id="winScreen" style="display: none;">
+        <h1>You Escaped the DMV!</h1>
+        <button id="playAgainButton">Play Again</button>
+    </div>
+
+    <div class="death-screen" id="deathScreen" style="display: none;">
+        <h1>YOU DIED</h1>
+        <button id="learnWhyButton">Learn Why</button>
+    </div>
+
+    <div class="death-reason" id="deathReason">
+        <h3>Skill Issue</h3>
+    </div>
+
+    <script src="DMV_Line.js"></script>
+</body>
+</html>
