@@ -343,7 +343,7 @@
             </div>
         </div>
 
-        <audio id="bgm" src="Main Theme (CD Version) - Bad Piggies.mp3" loop autoplay></audio>
+        <audio id="bgm" src="Main Theme (CD Version) - Bad Piggies.mp3"></audio>
         <div id="message-box">POV: You are getting jumped! UH OH!</div>
         
         <!-- Player -->
@@ -540,12 +540,22 @@
             });
         }
 
-        document.body.addEventListener('click', function () {
-    const bgm = document.getElementById('bgm');
-    if (bgm.paused) {
-        bgm.play();
-    }
-});
+                // Start dialog functionality
+                document.getElementById('start-button').addEventListener('click', function() {
+            // Play the BGM when start button is clicked
+            const bgm = document.getElementById('bgm');
+            bgm.currentTime = 0; // Reset audio to beginning
+            bgm.loop = true; // Ensure looping is enabled
+            bgm.volume = 1.0; // Set volume to maximum
+            bgm.play()
+            .catch(error => {
+                console.log("Audio playback failed:", error);
+            });
+
+            // Don't show start dialog on restart
+            document.getElementById('start-dialog').style.display = 'none';
+        });
+
 
 
         // Select a boss to attack
@@ -629,11 +639,13 @@
 
             if (Math.random() < 0.10) { // 10% chance ( funny but somewhat rare)
                 speed = 45; //This makes the minigame really impossible which is really funny
+                gameState.impossibleSpeedActive = true;
             } else {
                 speed = Math.floor(Math.random() * 7) + 5; // 5 to 10 inclusive
                 //speed = 15;
-
+                gameState.impossibleSpeedActive = false;
             }
+          
 
             const maxPosition = 400 - 4; // container width - cursor width
             
@@ -692,8 +704,12 @@
             
             // Handle different actions based on whether it was an attack or defense
             if (gameState.currentAction === 'attack') {
-                // Apply damage based on minigame result
-                const damageMultiplier = success ? 2 : 1;
+                // Apply damage based on minigame result and if it was impossible speed
+                let damageMultiplier = 1; // Default multiplier
+                if (success) {
+                    damageMultiplier = gameState.impossibleSpeedActive ? 3 : 2;
+                }
+                
                 let damage = Math.floor(gameState.player.damage * damageMultiplier * (0.8 + Math.random() * 0.4));
                 
                 // Apply damage to the selected boss
@@ -712,12 +728,21 @@
                     }
                 } else {
                     if (success) {
-                        messageBox.textContent = `Critical hit! You did ${damage} damage!`;
+                        if (gameState.impossibleSpeedActive) {
+                            messageBox.textContent = `WHAT?!?!? HOW!!! You did ${damage} damage!`;
+                        } else {
+                            messageBox.textContent = `Critical hit! You did ${damage} damage!`;
+                        }
                     } else {
                         messageBox.textContent = `You attack a boss for ${damage} damage!`;
                     }
                 }
-            } else if (gameState.currentAction === 'defend') {
+                
+                // Reset impossibleSpeedActive flag
+                gameState.impossibleSpeedActive = false;
+            }
+           
+            else if (gameState.currentAction === 'defend') {
                 // Apply defense effect based on minigame result
                 if (success) {
                     gameState.bossesWeakened = true;
