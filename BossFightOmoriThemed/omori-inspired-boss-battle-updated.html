@@ -285,62 +285,114 @@
             text-align: center;
             margin-top: 20px;
         }
-    </style>
-    <style>
+            </style>
+            <style>
         #start-dialog {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.4);
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-end;
             z-index: 150;
+            padding-bottom: 50px;
+            transition: opacity 1s ease;
+            background-image: url('AlleywayIntro.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         
+        #character-image {
+            position: absolute;
+            bottom: 120px; /* Position above the dialogue box */
+            left: 50%;
+            transform: translateX(-50%);
+            height: 500px; /* Adjust based on your image size */
+            z-index: 151; /* Lower z-index so it's behind the dialogue box */
+            transition: opacity 0.3s ease;
+        }
+
         #start-dialog-content {
-            background-color: #000;
-            border: 2px solid #fff;
-            padding: 30px;
+            background-color: transparent;
+            border: none;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            width: 400px;
+            width: 80%;
+            max-width: 800px;
         }
-        
-        #start-dialog-text {
-            font-size: 28px;
+
+        #dialogue-box {
+            width: 100%;
+            text-align: left;
+            position: relative;
+            margin-bottom: 10px;
+            z-index: 156; /* Add this line to ensure it's above character image */
+        }
+
+        #character-name {
+            background-color: #ffb6c1;
+            padding: 5px 15px;
+            display: inline-block;
+            margin-bottom: 0;
             font-weight: bold;
-            text-align: center;
-        }
-        
-        #start-button {
-            padding: 10px 40px;
-            font-size: 18px;
-            cursor: pointer;
-            background-color: #000;
+            color: #000;
+            border-radius: 5px 5px 0 0;
             border: 2px solid #fff;
+            border-bottom: none;
+        }
+        /* Add this for dialogue box character-specific backgrounds */
+        .character-bg-you { background-image: url('AlleywayIntro.jpg') !important; }
+        .character-bg-masked { background-image: url('AlleywayIntro.jpg') !important; }
+        .character-bg-alley { background-image: url('AlleywayIntro.jpg') !important; }
+
+        #dialogue-text {
+            background-color: rgba(0,0,0,0.9);
+            padding: 20px;
+            min-height: 80px;
+            font-size: 20px;
+            border: 2px solid #fff;
+            line-height: 1.4;
             color: #fff;
         }
+
+        #next-dialogue {
+            align-self: flex-end;
+            padding: 8px 40px;
+            margin-top: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #ffb6c1;
+            border: 2px solid #fff;
+            color: #000;
+            transition: all 0.2s;
+            z-index: 157; /* Add this line to ensure it's above everything */
+        }
+
+        #next-dialogue:hover {
+            background-color: #ff8da1;
+        }
     </style>
+    
 </head>
 <body>
     <div id="game-container">
 
+                <!-- Replace the existing start-dialog-content div with this structure -->
         <div id="start-dialog">
             <div id="start-dialog-content">
-                <div id="start-dialog-text">You were on a walk. Suddenly, you get cornered from ALL SIDES by 4 masked people.</div>
-                <div id="start-dialog-text">You feel like your gonna have a bad time.</div>
-
-                <div id="start-dialog-text">-----------------------</div>
-                <button id="start-button">Continu... What, there's boss music?! </button>
-                <div id="start-dialog-text">-----------------------</div>
-
-                <div id="start-dialog-text">Tip: Turn On Your Volume.</div>
+                <div id="dialogue-box">
+                    <div id="character-name"></div>
+                    <div id="dialogue-text"></div>
+                </div>
+                <button id="next-dialogue">OK</button>
             </div>
+            <img id="character-image" src="Crook1.gif" alt="Character">
         </div>
 
         <audio id="bgm" src="Main Theme (CD Version) - Bad Piggies.mp3"></audio>
@@ -540,21 +592,112 @@
             });
         }
 
-                // Start dialog functionality
-                document.getElementById('start-button').addEventListener('click', function() {
-            // Play the BGM when start button is clicked
-            const bgm = document.getElementById('bgm');
-            bgm.currentTime = 0; // Reset audio to beginning
-            bgm.loop = true; // Ensure looping is enabled
-            bgm.volume = 1.0; // Set volume to maximum
-            bgm.play()
-            .catch(error => {
-                console.log("Audio playback failed:", error);
-            });
+        // Character and dialogue setup
+const dialogueSequence = [
+    { character: "???", text: "Hey! You there! Stop right where you are!" },
+    { character: "You", text: "Huh? Who's there?" },
+    { character: "Masked Figure", text: "Hand over your valuables. NOW." },
+    { character: "You", text: "I... I don't have anything worth taking!" },
+    { character: "Another Voice", text: "Heh. Wrong answer, buddy." },
+    { character: "You", text: "Wait... I'm surrounded?!" },
+    { character: "Masked Figure", text: "Four against one. Not good odds for you." },
+    { character: "You", text: "..." },
+    { character: "You", text: "(I need to find a way out of this!)" },
+    { character: "???", text: "Let's make this quick." }
+];
 
-            // Don't show start dialog on restart
-            document.getElementById('start-dialog').style.display = 'none';
+let currentDialogueIndex = 0;
+let dialogueInitialized = false;
+
+// Function to show next dialogue
+function showNextDialogue() {
+    if (currentDialogueIndex < dialogueSequence.length) {
+        const dialogue = dialogueSequence[currentDialogueIndex];
+        const characterImage = document.getElementById('character-image');
+        const startDialog = document.getElementById('start-dialog');
+        
+        // Update character name and text
+        document.getElementById('character-name').textContent = dialogue.character;
+        document.getElementById('dialogue-text').textContent = dialogue.text;
+        
+        // Change character image based on who is speaking
+        if (dialogue.character === "You") {
+            characterImage.src = "PrimaryKeyStillImage.jpg";
+        } else if (dialogue.character === "Masked Figure") {
+            characterImage.src = "Crook1.gif";
+        } else if (dialogue.character === "Another Voice") {
+            characterImage.src = "Crook4.gif";
+        } else if (dialogue.character === "???") {
+            characterImage.src = "Crook3.gif";
+        } else {
+            characterImage.src = "Crook2.gif"; // Default character
+        }
+        
+        // Remove all background class changes - we'll use a single background
+        startDialog.className = '';
+        
+        currentDialogueIndex++;
+    } else {
+        // End of dialogue sequence, start the game with a fade transition
+        const startDialog = document.getElementById('start-dialog');
+        const bgm = document.getElementById('bgm');
+        
+        // Start fade out effect
+        startDialog.style.opacity = '0';
+        
+        // Play background music
+        bgm.currentTime = 0;
+        bgm.loop = true;
+        bgm.volume = 0.8;
+        bgm.play().catch(error => {
+            console.log("Audio playback failed:", error);
         });
+
+        // Wait for fade to complete before hiding completely
+        setTimeout(() => {
+            startDialog.style.display = 'none';
+            // Reset opacity for potential restart
+            startDialog.style.opacity = '1';
+        }, 1000); // Match this to the transition time in CSS (1s)
+    }
+}
+
+
+// Set up the dialogue system when the page loads
+document.getElementById('next-dialogue').addEventListener('click', showNextDialogue);
+
+// Start with the first dialogue
+showNextDialogue();
+
+// Modify the restart game function to prevent showing the dialogue again
+restartGame = function() {
+    // Reset player
+    gameState.player.health = gameState.player.maxHealth;
+    
+    // Reset bosses
+    gameState.bosses.forEach(boss => {
+        boss.health = boss.maxHealth;
+        boss.energy = boss.maxEnergy;
+        document.getElementById(`boss${boss.id}`).style.opacity = 1;
+    });
+    
+    // Reset game state
+    gameState.currentTurn = 'player';
+    gameState.bossesDefeated = 0;
+    gameState.gameOver = false;
+    gameState.minigameActive = false;
+    gameState.bossesWeakened = false;
+    gameState.currentAction = null;
+    
+    // Update UI
+    updateHealthBars();
+    messageBox.textContent = 'POV: You are getting jumped! Uh oh!';
+    gameOverScreen.style.display = 'none';
+    
+    // Make sure dialogue doesn't show again
+    document.getElementById('start-dialog').style.display = 'none';
+};
+
 
 
 
@@ -883,17 +1026,7 @@
         });
 
         // Start dialog functionality
-        document.getElementById('start-button').addEventListener('click', function() {
-            // Play the BGM when OK is clicked
-            const bgm = document.getElementById('bgm');
-            bgm.play();
-            
-
-            // gameOverScreen.style.display = 'none';
-            // Don't show start dialog on restart
-            document.getElementById('start-dialog').style.display = 'none';
-            
-        });
+        
 
         // Initialize game
         updateHealthBars();
