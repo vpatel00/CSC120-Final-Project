@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnlyGames - Premium Gaming Experience</title>
+    <style>
+        :root {
+            /* Color palette */
+            --primary-blue: #00aff0; --dark-blue: #044f6f; --page-bg: #f8f8f8;
+            --card-bg: #fff; --text-dark: #1a1a1a; --text-light: #f0f0f0;
+            --text-muted: #6c757d; --border-color: #dee2e6; --accent: var(--primary-blue);
+            --of-text: var(--text-dark); --header-bg: #ffffff; --header-border: #e8e8e8;
+            --game-bg: #333; --game-bg-light: #4a4a4a; /* Lighter shade for gradients */
+            --snake-color: #00e600; --snake-color-dark: #009900; /* Brighter Green */
+            --food-color: #ff1a1a; --food-color-dark: #cc0000; /* Brighter Red */
+            --game-page-bg: #f8f8f8; /* Use light page background */
+            --ad-placeholder-bg: #e9ecef; --ad-placeholder-border: #dee2e6;
+            --ad-placeholder-text: #6c757d; --input-border: #ced4da; --input-focus-border: #86b7fe;
+            --input-focus-shadow: 0 0 0 0.25rem rgba(0, 175, 240, 0.25);
+            /* Memory Game Colors */
+            --memory-card-back: #a9a9a9; --memory-card-border: #666; /* Lighter back */
+            --memory-card-revealed: #f0f0f0; --memory-symbol-color: #1a1a1a;
+            /* Racing Game Colors */
+            --road-color: #555; --stripe-color: #eee; --player-car-color: #00aff0; --player-car-dark: #0077b3;
+            --obstacle-car-color: #ff6347; --obstacle-car-dark: #cc503a; --car-highlight: #ffffff44; --car-shadow: #00000033;
+            /* Clicker Game Colors */
+            --target-color: #ff4500; --target-color-dark: #cc3700; --target-highlight: #ff8c66;
+            /* Tip Button */
+            --tip-button-bg: #e9ecef; --tip-button-hover: #d1dbe5; --tip-button-border: #ced4da;
+            /* Slots */
+            --slot-reel-bg: #f0f0f0; --slot-border: #ccc; --slot-win-line: #ffcc00;
+            --slot-cherry: #dc143c; --slot-lemon: #fffacd; --slot-orange: #ffa500;
+            --slot-watermelon: #90ee90; --slot-star: #ffd700; --slot-bell: #f0e68c;
+            --slot-diamond: #b0e0e6;
+            /* Ad Sidebar */
+            --ad-sidebar-width: 160px;
+            --ad-sidebar-gap: 1rem;
+        }
+        /* General Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        body { background-color: var(--page-bg); color: var(--text-dark); font-size: 14px; line-height: 1.5; overflow-x: hidden; position: relative; /* Needed for fixed sidebars */ }
+        header { background-color: var(--header-bg); padding: 0.6rem 1rem; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--header-border); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
+        .container { max-width: 1140px; margin: 0 auto; padding: 0 1rem; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.6rem; font-weight: bold; color: var(--primary-blue); display: flex; align-items: center; gap: 0.4rem; text-decoration: none; height: 36px; }
+        .logo-svg { width: 36px; height: 36px; fill: var(--primary-blue); margin-top: -2px; } /* Style for SVG logo */
+        nav ul { display: flex; list-style: none; }
+        nav ul li { margin-left: 1.2rem; }
+        nav ul li a { color: var(--text-muted); text-decoration: none; font-weight: 500; transition: color 0.3s; font-size: 0.9rem; }
+        nav ul li a:hover { color: var(--primary-blue); }
+        .user-actions { display: flex; align-items: center; }
+        .token-display { background-color: transparent; padding: 0.3rem 0.7rem; border-radius: 20px; margin-right: 0.8rem; display: flex; align-items: center; color: var(--text-dark); font-size: 0.85rem; border: 1px solid var(--border-color); }
+        .token-icon { color: var(--primary-blue); margin-right: 0.3rem; font-size: 1em; }
+        .btn { background-color: var(--primary-blue); color: #fff; border: none; padding: 0.5rem 1.1rem; border-radius: 20px; cursor: pointer; font-weight: 600; transition: background-color 0.3s, box-shadow 0.3s; font-size: 0.85rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; white-space: nowrap; }
+        .btn:hover { background-color: var(--dark-blue); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); }
+        .btn:disabled { background-color: #cccccc; cursor: not-allowed; box-shadow: none; }
+        .btn-secondary { background-color: var(--card-bg); color: var(--text-muted); border: 1px solid var(--border-color); box-shadow: none; }
+        .btn-secondary:hover { background-color: #f1f1f1; color: var(--text-dark); box-shadow: none; }
+        #main-content { display: block; padding-left: 0; padding-right: 0; transition: padding 0.3s ease; /* Smooth transition for padding */ }
+        .hero { background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)), url('https://placehold.co/1200x400/00aff0/333333?text=Awesome+Game+Montage'); background-size: cover; background-position: center center; padding: 3rem 0; text-align: center; border-bottom: 1px solid var(--border-color); position: relative; }
+        .hero h1 { font-size: 2.8rem; margin-bottom: 0.6rem; color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+        .hero p { font-size: 1.1rem; margin-bottom: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto; color: #eee; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
+        .search-bar { max-width: 500px; margin: 0 auto; display: flex; overflow: hidden; border-radius: 25px; border: 1px solid var(--border-color); background-color: var(--card-bg); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
+        .search-bar input { flex: 1; padding: 0.7rem 1.3rem; border: none; outline: none; font-size: 0.95rem; color: var(--text-dark); background-color: transparent; }
+        .search-bar input::placeholder { color: var(--text-muted); }
+        .search-bar button { padding: 0 1.3rem; background-color: transparent; border: none; cursor: pointer; color: var(--primary-blue); }
+        .search-icon { font-size: 1.1rem; }
+        .categories { padding: 1.5rem 0; background-color: var(--page-bg); }
+        .section-title { font-size: 1.2rem; margin-bottom: 1rem; text-align: left; color: var(--text-dark); font-weight: 600; padding-left: 0; }
+        .category-list { display: flex; justify-content: flex-start; flex-wrap: wrap; gap: 0.6rem; }
+        .category-item { background-color: var(--card-bg); border-radius: 15px; padding: 0.35rem 0.9rem; cursor: pointer; transition: all 0.2s; color: var(--text-muted); border: 1px solid var(--border-color); font-size: 0.8rem; }
+        .category-item:hover { background-color: #f0f7fa; color: var(--primary-blue); border-color: var(--primary-blue); }
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.2rem; padding: 1.2rem 0 2rem; }
+        .game-card { background-color: var(--card-bg); border-radius: 8px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; border: 1px solid var(--border-color); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06); position: relative; display: block; }
+        .game-card.hidden { display: none; }
+        .game-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .game-thumbnail { height: 170px; background-color: #e0e0e0; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 1.5rem; position: relative; font-weight: bold; background-size: cover; background-position: center; }
+        .game-card.is-premium .game-thumbnail::after { content: '🔒'; position: absolute; top: 8px; right: 8px; font-size: 1.3rem; color: rgba(0, 0, 0, 0.5); background-color: rgba(255, 255, 255, 0.7); padding: 2px 4px; border-radius: 4px; }
+        .game-info { padding: 0.8rem; }
+        .game-title { font-size: 1rem; margin-bottom: 0.2rem; color: var(--text-dark); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .game-creator { display: flex; align-items: center; margin-bottom: 0.4rem; }
+        .creator-avatar { width: 22px; height: 22px; border-radius: 50%; background-color: #ccc; margin-right: 6px; display: inline-block; flex-shrink: 0; background-size: cover; }
+        .creator-name { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .game-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted); }
+        .game-status { font-weight: 500; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; flex-shrink: 0; }
+        .game-status.free { color: #28a745; background-color: rgba(40, 167, 69, 0.1); }
+        .game-status.premium { color: var(--primary-blue); background-color: rgba(0, 175, 240, 0.1); }
+        footer { background-color: var(--header-bg); padding: 1.5rem 0; text-align: center; border-top: 1px solid var(--header-border); margin-top: 1.5rem; }
+        .footer-links { display: flex; justify-content: center; margin-bottom: 0.8rem; flex-wrap: wrap; }
+        .footer-links a { color: var(--text-muted); margin: 0 0.7rem; text-decoration: none; transition: color 0.3s; font-size: 0.8rem; }
+        .footer-links a:hover { color: var(--primary-blue); }
+        .footer-text { color: var(--text-muted); font-size: 0.75rem; }
+
+        /* Modal Styles */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s linear 0.3s; }
+        .modal.is-visible { display: flex; opacity: 1; visibility: visible; transition: opacity 0.3s ease, visibility 0s linear 0s; }
+        .modal-content { background-color: var(--card-bg); padding: 1.5rem; border-radius: 8px; max-width: 450px; width: 100%; text-align: center; color: var(--text-dark); box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); border: none; transform: scale(0.95); transition: transform 0.3s ease; }
+        .modal.is-visible .modal-content { transform: scale(1); }
+        .modal-title { font-size: 1.3rem; margin-bottom: 0.8rem; color: var(--text-dark); font-weight: 600; }
+        .modal-content p { color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem; }
+        .modal-buttons { display: flex; justify-content: center; gap: 0.8rem; margin-top: 1.5rem; }
+        .subscribe-options, .token-packages { display: grid; gap: 0.8rem; margin: 1rem 0; }
+        .subscribe-options { grid-template-columns: 1fr; }
+        .token-packages { grid-template-columns: 1fr; }
+        .subscribe-option, .token-package { background-color: var(--page-bg); padding: 1rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-color); text-align: left; }
+        .subscribe-option:hover, .token-package:hover { background-color: #eaf5fa; border-color: var(--primary-blue); }
+        .subscribe-price, .token-amount { font-size: 1.3rem; font-weight: bold; color: var(--primary-blue); margin: 0.2rem 0; }
+        .token-amount { display: flex; align-items: center; justify-content: flex-start; }
+        .token-amount .token-icon { margin-right: 0.4rem; }
+        .subscribe-period, .token-price { font-size: 0.85rem; color: var(--text-muted); }
+        .subscribe-save { font-size: 0.75rem; color: #28a745; font-weight: bold; margin-top: 0.2rem; }
+
+        /* Credit Card Form Styles */
+        .payment-form { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); text-align: left; }
+        .payment-form h4 { font-size: 1rem; margin-bottom: 0.8rem; font-weight: 600; text-align: center; }
+        .form-group { margin-bottom: 0.8rem; }
+        .form-group label { display: block; margin-bottom: 0.2rem; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); }
+        .form-control { display: block; width: 100%; padding: 0.5rem 0.7rem; font-size: 0.9rem; font-weight: 400; line-height: 1.5; color: var(--text-dark); background-color: #fff; background-clip: padding-box; border: 1px solid var(--input-border); appearance: none; border-radius: 0.3rem; transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out; }
+        .form-control:focus { color: var(--text-dark); background-color: #fff; border-color: var(--input-focus-border); outline: 0; box-shadow: var(--input-focus-shadow); }
+        .expiry-cvv-group { display: flex; gap: 0.8rem; }
+        .expiry-cvv-group .form-group { flex: 1; }
+
+        /* Game Page Styles */
+        #game-page-container { display: none; position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh; background-color: var(--page-bg); color: var(--text-dark); z-index: 50; }
+        #game-page-header { background-color: var(--header-bg); padding: 0.6rem 1.2rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--header-border); position: sticky; top: 0; z-index: 60; }
+        #game-page-title { font-size: 1.3rem; font-weight: 600; margin: 0; text-align: center; flex-grow: 1; color: var(--text-dark); }
+        #back-to-menu-gamepage { background-color: var(--card-bg); color: var(--text-muted); border: 1px solid var(--border-color); box-shadow: none; padding: 0.4rem 1rem; font-size: 0.8rem; }
+        #back-to-menu-gamepage:hover { background-color: #f1f1f1; color: var(--text-dark); box-shadow: none; }
+        #game-page-credits { font-size: 0.85rem; font-weight: 500; color: var(--text-muted); border: 1px solid var(--border-color); padding: 0.3rem 0.7rem; border-radius: 15px; margin-left: 1rem; }
+        #game-page-credits .token-icon { font-size: 0.9em; margin-right: 0.3rem; }
+        #game-page-content { display: flex; flex-direction: column; padding: 1rem; gap: 1rem; max-width: 1400px; margin: 0 auto; }
+        #game-main-area { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; }
+        #game-canvas-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; margin-bottom: 1rem; }
+        #score-display-gamepage { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.8rem; background-color: rgba(0,0,0,0.05); color: var(--text-dark); padding: 0.3rem 0.8rem; border-radius: 15px; border: 1px solid var(--border-color); }
+        #game-canvas { background-color: var(--game-bg); border: 2px solid var(--primary-blue); border-radius: 8px; max-width: 100%; max-height: 70vh; width: auto; height: auto; display: block; cursor: default; }
+        #game-canvas.memory-active, #game-canvas.clicker-active { cursor: pointer; }
+        #game-info-area { background-color: var(--card-bg); padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06); width: 100%; display: flex; flex-direction: column; gap: 0.6rem; }
+        #game-info-area h3, #game-info-area h4 { margin-bottom: 0.3rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3rem; color: var(--text-dark); font-size: 1.1rem; }
+        #game-info-area p { font-size: 0.85rem; color: var(--text-muted); }
+        .game-controls { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
+        #start-game-gamepage { width: auto; min-width: 140px; }
+        .game-touch-controls { display: flex; justify-content: center; width: 100%; margin-top: 0.3rem; }
+        .touch-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 0.4rem; width: 140px; }
+        .touch-arrow-btn { font-size: 1.4rem; padding: 0.4rem 0.7rem; min-width: 40px; line-height: 1; background-color: var(--page-bg); border: 1px solid var(--border-color); color: var(--text-muted); }
+        .touch-arrow-btn:hover { background-color: #e2e6ea; color: var(--text-dark); }
+        #game-details { margin-top: 0; }
+        /* Tipping Styles */
+        #tip-section { margin-top: 0.5rem; }
+        .tip-buttons { display: flex; justify-content: space-around; gap: 0.4rem; margin-top: 0.4rem; }
+        .tip-button { flex: 1; background-color: var(--tip-button-bg); color: var(--text-dark); border: 1px solid var(--tip-button-border); padding: 0.3rem 0.5rem; font-size: 0.8rem; border-radius: 15px; cursor: pointer; transition: background-color 0.2s; text-align: center; }
+        .tip-button:hover { background-color: var(--tip-button-hover); }
+        .tip-button .token-icon { font-size: 0.85em; margin-right: 3px; color: var(--primary-blue); }
+        /* Slots Controls */
+        #slots-controls { display: none; flex-direction: column; align-items: center; gap: 0.6rem; margin-top: 0.5rem; }
+        .bet-controls { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.4rem; justify-content: center; align-items: center; }
+        .custom-bet-input { padding: 0.3rem 0.6rem; font-size: 0.85rem; border-radius: 15px; border: 1px solid var(--input-border); width: 70px; text-align: center; margin-right: 0.4rem; }
+        .custom-bet-input:focus { border-color: var(--input-focus-border); outline: 0; box-shadow: var(--input-focus-shadow); }
+        .custom-bet-input::-webkit-outer-spin-button, .custom-bet-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .custom-bet-input[type=number] { -moz-appearance: textfield; }
+        #spin-button { width: auto; min-width: 140px; padding: 0.6rem; font-size: 1rem; margin-top: 0.4rem; }
+
+        /* More Games Sidebar */
+        #more-games-sidebar { background-color: var(--card-bg); padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06); width: 100%; max-width: 260px; flex-shrink: 0; margin-top: 1.5rem; align-self: stretch; display: flex; flex-direction: column; /* Enable flex for ad positioning */ }
+         #more-games-sidebar h4 { margin-bottom: 0.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem; color: var(--text-dark); font-size: 1.1rem; order: 2; /* Title below ad */ margin-top: 0.8rem; /* Space above title */ }
+         .more-games-list { max-height: calc(70vh - 100px); overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 0.4rem; flex-grow: 1; /* Allow list to grow */ order: 3; /* List below title */ }
+        .more-games-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem; background-color: var(--page-bg); border-radius: 4px; text-decoration: none; color: var(--text-dark); transition: background-color 0.2s; cursor: pointer; border: 1px solid var(--border-color); }
+        .more-games-item:hover { background-color: #eaf5fa; border-color: var(--primary-blue); }
+        .more-games-item img { width: 35px; height: 35px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+        .more-games-item span { font-size: 0.85rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* Ad Placeholder in More Games Sidebar */
+        .game-page-sidebar-ad {
+            background-color: var(--ad-placeholder-bg);
+            border: 1px dashed var(--ad-placeholder-border);
+            color: var(--ad-placeholder-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            text-align: center;
+            border-radius: 4px;
+            width: 100%;
+            min-height: 120px; /* Adjust height as needed */
+            margin-bottom: 0.8rem; /* Space below ad */
+            flex-shrink: 0; /* Prevent shrinking */
+            order: 1; /* Ad at the top */
+        }
+        .game-page-sidebar-ad img { max-width: 100%; height: auto; border-radius: 4px; object-fit: contain; }
+
+
+        /* Ad Modal Styles */
+        #ad-modal .modal-content { max-width: 400px; padding: 0; position: relative; background: linear-gradient(135deg, #444, #111); border: 1px solid #555; overflow: hidden; }
+         #ad-modal .ad-link { display: block; text-decoration: none; }
+         #ad-modal img { display: block; width: 100%; height: auto; border-radius: 8px 8px 0 0; border-bottom: 1px solid #555; }
+         #ad-modal p { padding: 1rem 1.5rem; margin-bottom: 0; color: var(--text-light); font-weight: 500; text-shadow: 1px 1px 1px rgba(0,0,0,0.7); background-color: rgba(0,0,0,0.2); border-radius: 0 0 8px 8px; }
+         #close-ad-modal { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.4); color: #ccc; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; line-height: 18px; text-align: center; padding: 0; cursor: pointer; z-index: 10; transition: background-color 0.2s, color 0.2s; }
+         #close-ad-modal:hover { background: rgba(255,255,255,0.8); color: #333; }
+
+         /* Sidebar Ad Styles */
+         .sidebar-ad-placeholder {
+             width: var(--ad-sidebar-width);
+             height: 600px; /* Standard skyscraper height */
+             background-color: var(--ad-placeholder-bg);
+             border: 1px dashed var(--ad-placeholder-border);
+             color: var(--ad-placeholder-text);
+             display: flex;
+             flex-direction: column; /* Stack link/text */
+             align-items: center;
+             justify-content: center;
+             font-size: 0.9rem;
+             text-align: center;
+             border-radius: 4px;
+             position: fixed; /* Fixed position */
+             top: 80px; /* Adjust based on header height */
+             z-index: 10; /* Below header, above content potentially */
+             display: none; /* Hidden by default, shown via media query */
+             padding: 10px;
+         }
+         #left-ad-sidebar { left: var(--ad-sidebar-gap); }
+         #right-ad-sidebar { right: var(--ad-sidebar-gap); }
+         .sidebar-ad-placeholder a { display: block; margin-bottom: 5px; width: 100%; height: 100%; } /* Make link fill container */
+         .sidebar-ad-placeholder img {
+             max-width: 100%;
+             max-height: 100%; /* Limit image height */
+             height: auto;
+             width: auto; /* Adjust width automatically */
+             border-radius: 4px;
+             object-fit: contain; /* UPDATED: Contain image within bounds */
+         }
+
+        /* Home Page Ad Banner */
+         .ad-banner-placeholder {
+             background-color: var(--ad-placeholder-bg);
+             border: 1px dashed var(--ad-placeholder-border);
+             color: var(--ad-placeholder-text);
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             font-size: 1rem;
+             text-align: center;
+             border-radius: 6px;
+             width: 100%;
+             max-width: 728px; /* Common banner width */
+             height: 90px; /* Common banner height */
+             margin: 1.5rem auto; /* Center and add vertical space */
+             text-decoration: none; /* Remove underline if it's a link */
+         }
+         .ad-banner-placeholder:hover {
+             border-color: var(--primary-blue);
+             color: var(--primary-blue);
+         }
+         .ad-banner-placeholder img { max-width: 100%; height: 100%; object-fit: cover; border-radius: 4px; } /* Ensure banner image fits */
+
+
+        /* Responsive adjustments */
+        @media (min-width: 1480px) { /* Show side ads only on very wide screens */
+             .sidebar-ad-placeholder { display: flex; }
+             #main-content {
+                 padding-left: calc(var(--ad-sidebar-width) + var(--ad-sidebar-gap) * 2);
+                 padding-right: calc(var(--ad-sidebar-width) + var(--ad-sidebar-gap) * 2);
+             }
+        }
+        @media (min-width: 992px) {
+            #game-page-content { flex-direction: row; align-items: flex-start; gap: 1.5rem; }
+            #game-main-area { flex-grow: 1; order: 1; display: flex; flex-direction: column; }
+             #game-canvas-wrapper { width: 100%; margin-bottom: 1rem; }
+             #game-info-area { width: 100%; }
+            #more-games-sidebar { width: 260px; flex-shrink: 0; margin-top: 0; order: 2; align-self: stretch; /* Stretch vertically */ display: flex; flex-direction: column; }
+            #game-canvas { max-height: 70vh; }
+            .subscribe-options { grid-template-columns: 1fr 1fr; }
+            .token-packages { grid-template-columns: 1fr 1fr 1fr; }
+        }
+
+        @media (max-width: 991px) {
+             #game-page-content { flex-direction: column; align-items: center; }
+             #game-main-area { width: 100%; max-width: 600px; order: 1; }
+             #more-games-sidebar { max-width: 600px; width: 100%; order: 2; margin-top: 1.5rem; align-self: center; /* Center on medium */ }
+             .more-games-list { max-height: 30vh; }
+             .game-page-sidebar-ad { display: none; } /* Hide sidebar ad on medium/small */
+        }
+        @media (max-width: 768px) {
+            .header-container { flex-direction: column; gap: 1rem; align-items: flex-start; }
+            nav ul { margin-top: 0; padding-left: 0; width: 100%; justify-content: space-around; }
+            nav ul li { margin: 0; }
+            .user-actions { margin-top: 1rem; width: 100%; justify-content: center; }
+            .game-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+            .hero h1 { font-size: 2rem; } .hero p { font-size: 1rem; }
+            .modal-content { padding: 1.5rem; }
+            #game-page-header { padding: 0.6rem 1rem; } #game-page-title { font-size: 1.2rem; }
+            #game-page-content { padding: 1rem; } #game-canvas { max-height: 50vh; }
+            #game-sidebar { max-width: 100%; } /* Sidebar takes full width */
+            #game-page-credits { display: none; }
+            #ad-modal .modal-content { max-width: 90%; }
+            #game-info-area, #more-games-sidebar { max-width: 100%; } /* Full width on smallest screens */
+            .ad-banner-placeholder { height: 60px; font-size: 0.8rem; } /* Smaller banner on mobile */
+            .game-page-sidebar-ad { display: none; } /* Hide sidebar ad on small screens */
+        }
+
+    </style>
+    </head>
+<body>
+    <aside id="left-ad-sidebar" class="sidebar-ad-placeholder">
+        </aside>
+    <aside id="right-ad-sidebar" class="sidebar-ad-placeholder">
+        </aside>
+
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M13 11V8h-2v3H8v2h3v3h2v-3h3v-2z"></path><circle cx="15.5" cy="15.5" r="1.5"></circle><circle cx="8.5" cy="15.5" r="1.5"></circle></svg>
+                <span>OnlyGames</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#featured">Featured</a></li>
+                    <li><a href="#popular">Popular</a></li>
+                    <li><a href="#new">New</a></li>
+                    <li><a href="#premium">Premium</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <div class="token-display">
+                    <span class="token-icon">💲</span> <span id="token-count">500</span> Credits </div>
+                <button class="btn" id="get-tokens">Buy Credits</button>
+                <button class="btn" style="margin-left: 10px;" id="subscribe-btn">Subscribe</button>
+            </div>
+        </div>
+    </header>
+
+    <div id="main-content">
+        <section class="hero">
+            <div class="container">
+                <h1>Explore Exclusive Games</h1> <p>You won't last 20 minutes playing these games 😉</p>
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search games or creators...">
+                    <button id="search-button">
+                        <span class="search-icon">🔍</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="categories">
+            <div class="container">
+                <h2 class="section-title">Browse Categories</h2> <div class="category-list">
+                    <div class="category-item">Action</div> <div class="category-item">Adventure</div> <div class="category-item">Puzzle</div> <div class="category-item">Strategy</div> <div class="category-item">Racing</div> <div class="category-item">Sports</div> <div class="category-item">RPG</div> <div class="category-item">Shooting</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="featured">
+            <div class="container">
+                <h2 class="section-title">Featured Games</h2>
+                <div class="game-grid">
+                    <div class="game-card is-premium" data-game="racing" data-title="Speed Racer" data-thumbnail="https://placehold.co/300x180/4682b4/ffffff?text=Speed+Racer+3D"><div class="game-thumbnail"></div><div class="game-info"><div class="game-creator"><span class="creator-avatar" style="background-image: url('https://placehold.co/24x24/00aff0/ffffff?text=R')"></span><span class="creator-name">RacerDev</span></div><h3 class="game-title">Speed Racer</h3><div class="game-meta"><span>Racing</span><span class="game-status premium">Premium</span></div></div></div>
+                    <div class="game-card" data-game="memory" data-title="Brain Teaser" data-thumbnail="https://placehold.co/300x180/ffcc00/444444?text=Brain+Teaser+Pro"><div class="game-thumbnail"></div><div class="game-info"><div class="game-creator"><span class="creator-avatar" style="background-image: url('https://placehold.co/24x24/777777/ffffff?text=P')"></span><span class="creator-name">PuzzleMaster</span></div><h3 class="game-title">Brain Teaser</h3><div class="game-meta"><span>Puzzle</span><span class="game-status free">Free</span></div></div></div>
+                 </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="ad-banner-placeholder" id="ad-banner-1">Advertisement (728x90)</div>
+        </div>
+
+        <section id="popular">
+             <div class="container">
+                 <h2 class="section-title">Popular Games</h2>
+                 <div class="game-grid">
+                    <div class="game-card" data-game="snake" data-title="Zombie Survival" data-thumbnail="https://placehold.co/300x180/8b0000/ffffff?text=Zombie+Survival+Night"><div class="game-thumbnail"></div><div class="game-info"><div class="game-creator"><span class="creator-avatar" style="background-image: url('https://placehold.co/24x24/cc0000/ffffff?text=S')"></span><span class="creator-name">SurvivalGames</span></div><h3 class="game-title">Zombie Survival</h3><div class="game-meta"><span>Action</span><span class="game-status free">Free</span></div></div></div>
+                    <div class="game-card is-premium" data-game="snake" data-title="Castle Defense" data-thumbnail="https://placehold.co/300x180/a0522d/ffffff?text=Castle+Defense+Siege"><div class="game-thumbnail"></div><div class="game-info"><div class="game-creator"><span class="creator-avatar" style="background-image: url('https://placehold.co/24x24/663399/ffffff?text=S')"></span><span class="creator-name">StrategyKing</span></div><h3 class="game-title">Castle Defense</h3><div class="game-meta"><span>Strategy</span><span class="game-status premium">Premium</span></div></div></div>
+                </div>
+            </div>
+        </section>
+
+         <div class="container">
+            <div class="ad-banner-placeholder" id="ad-banner-2">Advertisement (728x90)</div>
+        </div>
+
+        <section id="new">
+             <div class="container">
+                 <h2 class="section-title">New Releases</h2>
+                 <div class="game-grid">
+                     <div class="game-card" data-game="clicker" data-title="Bullseye" data-thumbnail="https://placehold.co/300x180/228b22/ffffff?text=Bullseye+Master"><div class="game-thumbnail"></div><div class="game-info"><div class="game-creator"><span class="creator-avatar" style="background-image: url('https://placehold.co/24x24/006400/ffffff?text=S')"></span><span class="creator-name">SharpShooter</span></div><h3 class="game-title">Bullseye</h3><div class="game-meta"><span>Shooting</span><span class="game-status free">Free</span></div></div></div>
+                     <div class="game-card is-premium" data-game="slots" data-title="Magic Realms" data-thumbnail="https://placehold.co/300x180/9400d3/ffffff?text=Magic+Realms+Slots"><div class="game-thumbnail"></div><div class="game-info"><div class="game-creator"><span class="creator-avatar" style="background-image: url('https://placehold.co/24x24/8a2be2/ffffff?text=F')"></span><span class="creator-name">FantasyWorld</span></div><h3 class="game-title">Magic Realms</h3><div class="game-meta"><span>RPG</span><span class="game-status premium">Premium</span></div></div></div>
+                 </div>
+             </div>
+         </section>
+
+        <section id="premium">
+             <div class="container">
+                 <h2 class="section-title">Premium Exclusives</h2>
+                 <div class="game-grid">
+                      <div class="game-card is-premium" data-game="snake" data-title="Champion's League" data-thumbnail="https://placehold.co/300x180/daa520/000000?text=Champions+League+Final"><div class="game-thumbnail"></div><div class="game-info"><div class="game-creator"><span class="creator-avatar" style="background-image: url('https://placehold.co/24x24/ffd700/000000?text=E')"></span><span class="creator-name">EliteSports</span></div><h3 class="game-title">Champion's League</h3><div class="game-meta"><span>Sports</span><span class="game-status premium">Premium</span></div></div></div>
+                 </div>
+             </div>
+         </section>
+
+        <footer>
+            <div class="container">
+                <div class="footer-links">
+                    <a href="#">About</a> <a href="#">Terms</a> <a href="#">Privacy</a> <a href="#">Contact</a> <a href="#">Help</a> </div>
+                <p class="footer-text">© 2025 OnlyGames. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <div class="modal" id="token-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Buy Credits</h3>
+            <p>Select a credit package:</p>
+            <div class="token-packages">
+                <div class="token-package" data-amount="500" data-price="$4.99"><div class="token-amount"><span class="token-icon">💲</span> 500</div><div class="token-price">$4.99</div></div>
+                <div class="token-package" data-amount="1200" data-price="$9.99"><div class="token-amount"><span class="token-icon">💲</span> 1200</div><div class="token-price">$9.99</div></div>
+                <div class="token-package" data-amount="3000" data-price="$19.99"><div class="token-amount"><span class="token-icon">💲</span> 3000</div><div class="token-price">$19.99</div></div>
+            </div>
+            <form class="payment-form" id="token-payment-form">
+                 <h4>Enter Payment Details (Simulation)</h4>
+                 <div class="form-group"><label for="token-card-number">Card Number</label><input type="text" id="token-card-number" class="form-control" placeholder="•••• •••• •••• ••••" required></div>
+                 <div class="expiry-cvv-group"><div class="form-group"><label for="token-card-expiry">Expiry (MM/YY)</label><input type="text" id="token-card-expiry" class="form-control" placeholder="MM/YY" required></div><div class="form-group"><label for="token-card-cvv">CVV</label><input type="text" id="token-card-cvv" class="form-control" placeholder="•••" required></div></div>
+                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">This is a simulation. Do not enter real card details.</p>
+                 <button type="submit" class="btn" id="confirm-token-purchase" style="width: 100%; margin-top: 1rem; display: none;">Confirm Purchase</button>
+            </form>
+            <div class="modal-buttons" style="margin-top: 1rem;"> <button class="btn btn-secondary" id="close-token-modal">Cancel</button></div>
+        </div>
+    </div>
+    <div class="modal" id="subscribe-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Subscribe for Full Access</h3>
+            <p>Choose your plan:</p>
+            <div class="subscribe-options">
+                <div class="subscribe-option" data-period="Monthly" data-price="$9.99" data-billing="Billed monthly"><h4>Monthly Access</h4> <div class="subscribe-price">$9.99</div><div class="subscribe-period">Billed monthly</div></div>
+                <div class="subscribe-option" data-period="Yearly" data-price="$99.99" data-billing="Billed annually"><h4>Yearly Access</h4> <div class="subscribe-price">$99.99</div><div class="subscribe-period">Billed annually</div><div class="subscribe-save">Save 17%</div></div>
+            </div>
+             <form class="payment-form" id="subscribe-payment-form">
+                 <h4>Enter Payment Details (Simulation)</h4>
+                 <div class="form-group"><label for="sub-card-number">Card Number</label><input type="text" id="sub-card-number" class="form-control" placeholder="•••• •••• •••• ••••" required></div>
+                 <div class="expiry-cvv-group"><div class="form-group"><label for="sub-card-expiry">Expiry (MM/YY)</label><input type="text" id="sub-card-expiry" class="form-control" placeholder="MM/YY" required></div><div class="form-group"><label for="sub-card-cvv">CVV</label><input type="text" id="sub-card-cvv" class="form-control" placeholder="•••" required></div></div>
+                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">This is a simulation. Do not enter real card details.</p>
+                 <button type="submit" class="btn" id="confirm-subscription" style="width: 100%; margin-top: 1rem; display: none;">Confirm Subscription</button>
+            </form>
+            <div class="modal-buttons" style="margin-top: 1rem;"> <button class="btn btn-secondary" id="close-subscribe-modal">Cancel</button></div>
+        </div>
+    </div>
+     <div class="modal" id="alert-modal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="alert-title">Alert</h3>
+            <p id="alert-message">This is an alert message.</p>
+            <div class="modal-buttons"><button class="btn" id="close-alert-modal">OK</button></div>
+        </div>
+    </div>
+     <div class="modal" id="ad-modal">
+        <div class="modal-content">
+             <button id="close-ad-modal" aria-label="Close Ad">&times;</button>
+             <a href="https://example.com" target="_blank" rel="noopener noreferrer" class="ad-link" id="ad-link">
+                <img src="https://placehold.co/450x250/00aff0/FFFFFF?text=Your+Amazing+Ad+Here!" alt="Advertisement Placeholder" id="ad-image" style="max-width: 100%; height: auto; border-radius: 8px 8px 0 0;">
+             </a>
+             <p>Advertisement - Game starting soon...</p>
+        </div>
+    </div>
+
+    <div id="game-page-container">
+        <header id="game-page-header">
+            <button class="btn btn-secondary" id="back-to-menu-gamepage">⬅️ Back</button>
+            <h2 id="game-page-title">Game Title</h2>
+            <div class="token-display" id="game-page-credits">
+                 <span class="token-icon">💲</span> <span id="game-page-token-count">500</span> Credits </div>
+        </header>
+        <div id="game-page-content">
+             <aside id="more-games-sidebar"> <div class="game-page-sidebar-ad">Advertisement</div> <h4>More Games</h4>
+                <div class="more-games-list" id="more-games-list">
+                    </div>
+             </aside>
+             <div id="game-main-area">
+                 <div id="game-canvas-wrapper">
+                     <div id="score-display-gamepage">Score: 0</div>
+                     <canvas id="game-canvas" width="400" height="400"></canvas>
+                 </div>
+                 <div class="ad-banner-placeholder" id="game-page-banner-ad" style="height: 90px; max-width: 728px; margin: 1rem auto;">Advertisement (728x90)</div>
+                 <div id="game-info-area">
+                    <div class="game-controls">
+                        <button class="btn" id="start-game-gamepage">▶️ Start Game</button>
+                        <p id="game-controls-text">Use Arrow Keys or Tap Controls below.</p>
+                        <div id="slots-controls">
+                            <div class="bet-controls">
+                                 <label for="custom-bet-input" style="margin-right: 5px; align-self: center;">Bet:</label>
+                                 <input type="number" id="custom-bet-input" class="custom-bet-input" value="5" min="1" step="1">
+                                 <button class="btn btn-secondary" id="set-bet-button" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Set</button>
+                            </div>
+                            <button class="btn" id="spin-button">Spin Reels</button>
+                        </div>
+                        <div class="game-touch-controls">
+                             <div class="touch-grid">
+                                 <button class="btn touch-arrow-btn" id="touch-up">⬆️</button>
+                                 <button class="btn touch-arrow-btn" id="touch-left">⬅️</button>
+                                 <button class="btn touch-arrow-btn" id="touch-down">⬇️</button>
+                                 <button class="btn touch-arrow-btn" id="touch-right">➡️</button>
+                             </div>
+                         </div>
+                    </div>
+                    <div id="game-details">
+                        <h4>Description</h4>
+                        <p id="game-description">Game description goes here.</p>
+                    </div>
+                    <div id="tip-section">
+                        <h4>Support the Creator</h4>
+                        <div class="tip-buttons">
+                            <button class="tip-button" data-tip="10"><span class="token-icon">💲</span> 10</button>
+                            <button class="tip-button" data-tip="25"><span class="token-icon">💲</span> 25</button>
+                            <button class="tip-button" data-tip="50"><span class="token-icon">💲</span> 50</button>
+                        </div>
+                    </div>
+                </div>
+             </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- DOM Elements ---
+        const siteHeader = document.querySelector('header');
+        const mainContent = document.getElementById('main-content');
+        const gamePageContainer = document.getElementById('game-page-container');
+        const gamePageTitle = document.getElementById('game-page-title');
+        const gamePageDescription = document.getElementById('game-description');
+        const backToMenuGamepageBtn = document.getElementById('back-to-menu-gamepage');
+        const startGameGamepageBtn = document.getElementById('start-game-gamepage');
+        const scoreDisplayGamepage = document.getElementById('score-display-gamepage');
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const gameControlsText = document.getElementById('game-controls-text');
+        const gameTouchControls = document.querySelector('.game-touch-controls');
+        const tipButtonsContainer = document.querySelector('.tip-buttons');
+        const slotsControls = document.getElementById('slots-controls');
+        const customBetInput = document.getElementById('custom-bet-input');
+        const setBetButton = document.getElementById('set-bet-button');
+        const spinButton = document.getElementById('spin-button');
+        const gamePageTokenCountEl = document.getElementById('game-page-token-count');
+        const moreGamesListContainer = document.getElementById('more-games-list');
+        const leftAdSidebar = document.getElementById('left-ad-sidebar');
+        const rightAdSidebar = document.getElementById('right-ad-sidebar');
+        const gamePageBannerAd = document.getElementById('game-page-banner-ad'); // Added
+        const gamePageSidebarAd = document.querySelector('.game-page-sidebar-ad'); // Added
+
+
+        // Modal elements
+        const getTokensBtn = document.getElementById('get-tokens');
+        const subscribeBtn = document.getElementById('subscribe-btn');
+        const tokenModal = document.getElementById('token-modal');
+        const subscribeModal = document.getElementById('subscribe-modal');
+        const alertModal = document.getElementById('alert-modal');
+        const adModal = document.getElementById('ad-modal');
+        const closeTokenModalBtn = document.getElementById('close-token-modal');
+        const closeSubscribeModalBtn = document.getElementById('close-subscribe-modal');
+        const closeAlertModalBtn = document.getElementById('close-alert-modal');
+        const closeAdModalBtn = document.getElementById('close-ad-modal');
+        const adImageElement = document.getElementById('ad-image');
+        const adLinkElement = document.getElementById('ad-link');
+        const tokenCountEl = document.getElementById('token-count');
+        const alertTitleEl = document.getElementById('alert-title');
+        const alertMessageEl = document.getElementById('alert-message');
+        const gameCardsNodeList = document.querySelectorAll('.game-card');
+        const tokenPackages = document.querySelectorAll('.token-package');
+        const subscribeOptions = document.querySelectorAll('.subscribe-option');
+
+        // Payment Form Elements
+        const tokenPaymentForm = document.getElementById('token-payment-form');
+        const subscribePaymentForm = document.getElementById('subscribe-payment-form');
+        const confirmTokenPurchaseBtn = document.getElementById('confirm-token-purchase');
+        const confirmSubscriptionBtn = document.getElementById('confirm-subscription');
+
+        // Game elements
+        const gameCanvas = document.getElementById('game-canvas');
+        const touchUpBtn = document.getElementById('touch-up');
+        const touchLeftBtn = document.getElementById('touch-left');
+        const touchDownBtn = document.getElementById('touch-down');
+        const touchRightBtn = document.getElementById('touch-right');
+
+        // --- State Variables ---
+        let currentCredits = 500;
+        let isSubscribed = false;
+        // const premiumGameCost = 50; // Removed
+        let selectedTokenPackage = null;
+        let selectedSubscriptionOption = null;
+        let activeGameType = null;
+        let activeGameCleanup = null;
+        let gameLoopInterval = null;
+        let pendingGameStartInfo = null;
+        // let adTimer = null; // Removed timer logic
+
+        // --- Ad Data (Example Placeholders) ---
+        const ads = [
+            { img: 'https://placehold.co/160x600/ff6347/FFFFFF?text=Skyscraper+Ad+1', link: 'https://example.com/ad1', type: 'skyscraper' },
+            { img: 'https://placehold.co/160x600/4682b4/FFFFFF?text=Ad+2+Vertical', link: 'https://example.com/ad2', type: 'skyscraper' },
+            { img: 'https://placehold.co/160x600/32cd32/FFFFFF?text=Another+Tall+Ad', link: 'https://example.com/ad3', type: 'skyscraper' },
+            { img: 'https://placehold.co/160x600/9400d3/FFFFFF?text=Ad+Space+4+Rent', link: 'https://example.com/ad4', type: 'skyscraper' },
+            // Add banner ad sizes too
+            { img: 'https://placehold.co/728x90/ffcc00/333333?text=Banner+Ad+A', link: 'https://example.com/adA', type: 'banner' },
+            { img: 'https://placehold.co/728x90/8a2be2/FFFFFF?text=Banner+Ad+B', link: 'https://example.com/adB', type: 'banner' },
+             // Add smaller ad sizes
+            { img: 'https://placehold.co/120x240/f08080/FFFFFF?text=Small+Ad+1', link: 'https://example.com/adC', type: 'small' },
+            { img: 'https://placehold.co/120x240/20b2aa/FFFFFF?text=Small+Ad+2', link: 'https://example.com/adD', type: 'small' }
+        ];
+
+        // --- Game Variables ---
+        let ctx;
+        let canvasWidth, canvasHeight;
+        let snake; let food; let dx; let dy; let changingDirection; const snakeGridSize = 20; let snakeScore;
+        let memoryCards = []; let memoryRevealedCards = []; let memoryMatchedPairs = 0; let memoryCanClick = true; let memoryGridSize = 4;
+        const memorySymbols = ['🍎', '🍌', '🍒', '🍓', '🥝', '🍍', '🍇', '🍉', '🍊', '🍋', '🥥', '🥭'];
+        let playerCar; let obstacles = []; let racingScore; let roadOffset = 0; let obstacleSpeed = 3; let obstacleSpawnTimer = 0;
+        let carMoveLeft = false; let carMoveRight = false; const carSpeed = 5; let carAccelerating = false; const baseSpeed = 3; const acceleratedSpeed = 6;
+        let clickerTarget = {}; let clickerScore; let clickerTimer; const clickerGameDuration = 30;
+        let clickerTargetInterval;
+        const slotSymbols = ['🍒', '🍋', '🍊', '🍉', '⭐', '🔔', '💎'];
+        const numReels = 3; let reels = []; let currentBet = 5; let spinning = false;
+
+        // --- Utility Functions ---
+        function showModal(modalElement) { modalElement.style.display = 'flex'; setTimeout(() => modalElement.classList.add('is-visible'), 10); }
+        function hideModal(modalElement) {
+             modalElement.classList.remove('is-visible');
+             // Use a specific check for ad modal to avoid calling resetForms
+             if (modalElement.id !== 'ad-modal') {
+                 setTimeout(() => { modalElement.style.display = 'none'; resetForms(modalElement); }, 300);
+             } else {
+                  setTimeout(() => { modalElement.style.display = 'none'; }, 300);
+             }
+         }
+        function customAlert(title, message) { alertTitleEl.textContent = title; alertMessageEl.textContent = message; showModal(alertModal); }
+        function updateCreditDisplay() { tokenCountEl.textContent = currentCredits; gamePageTokenCountEl.textContent = currentCredits; }
+        function updateSubscribeButton() { if (isSubscribed) { subscribeBtn.textContent = 'Subscribed'; subscribeBtn.style.backgroundColor = '#5cb85c'; subscribeBtn.style.borderColor = '#4cae4c'; subscribeBtn.disabled = true; } else { subscribeBtn.textContent = 'Subscribe'; subscribeBtn.style.backgroundColor = 'var(--primary-blue)'; subscribeBtn.style.borderColor = 'transparent'; subscribeBtn.disabled = false; } }
+        function resetForms(modalElement) { const form = modalElement.querySelector('.payment-form'); if (form) { form.reset(); form.style.display = 'none'; const confirmBtn = form.querySelector('button[type="submit"]'); if(confirmBtn) confirmBtn.style.display = 'none'; modalElement.querySelectorAll('.token-package, .subscribe-option').forEach(el => { el.style.pointerEvents = 'auto'; el.style.borderColor = 'var(--border-color)'; }); } selectedTokenPackage = null; selectedSubscriptionOption = null; }
+        function validatePaymentForm(formId) { const form = document.getElementById(formId); if (!form) return false; const inputs = form.querySelectorAll('input[required]'); for (let input of inputs) { if (!input.value.trim()) { return false; } } return true; }
+
+        // --- Ad Function ---
+        function showRandomAdPopup(callback) { // Renamed to avoid confusion
+            const popupAds = ads.filter(ad => !ad.img.includes('160x600')); // Exclude skyscrapers
+            if (popupAds.length === 0) { // Fallback if no non-skyscraper ads
+                if (callback) callback();
+                return;
+            }
+            const randomAd = popupAds[Math.floor(Math.random() * popupAds.length)];
+            adImageElement.src = randomAd.img; // Use the selected ad image
+            adLinkElement.href = randomAd.link;
+            showModal(adModal);
+            // Store the callback to execute when the ad is closed
+            if (pendingGameStartInfo) { // Ensure pendingGameStartInfo exists
+                 pendingGameStartInfo.adCallback = callback;
+            } else {
+                 // If no pending game, just store the callback for potential later use
+                 // This might happen if called directly after game end without immediate restart
+                 pendingGameStartInfo = { adCallback: callback };
+            }
+        }
+
+        // --- Load Ads ---
+        function loadAds() {
+            // Load Sidebar Ads
+            const sidebarAds = ads.filter(ad => ad.type === 'skyscraper');
+            if (leftAdSidebar && sidebarAds.length > 0) {
+                const randomAdLeft = sidebarAds[Math.floor(Math.random() * sidebarAds.length)];
+                leftAdSidebar.innerHTML = `
+                    <a href="${randomAdLeft.link}" target="_blank" rel="noopener noreferrer">
+                        <img src="${randomAdLeft.img}" alt="Advertisement">
+                    </a>`;
+            }
+            if (rightAdSidebar && sidebarAds.length > 0) {
+                 let randomAdRight = sidebarAds[Math.floor(Math.random() * sidebarAds.length)];
+                 if (sidebarAds.length > 1 && leftAdSidebar && leftAdSidebar.querySelector('a') && randomAdRight.link === leftAdSidebar.querySelector('a').href) {
+                     randomAdRight = sidebarAds.find(ad => ad.link !== leftAdSidebar.querySelector('a').href) || sidebarAds[0];
+                 }
+                 rightAdSidebar.innerHTML = `
+                    <a href="${randomAdRight.link}" target="_blank" rel="noopener noreferrer">
+                        <img src="${randomAdRight.img}" alt="Advertisement">
+                    </a>`;
+            }
+
+            // Load Home Page Banner Ads
+            const bannerAds = ads.filter(ad => ad.type === 'banner');
+            const bannerPlaceholders = document.querySelectorAll('#main-content .ad-banner-placeholder'); // Target only main page banners
+            bannerPlaceholders.forEach((placeholder, index) => {
+                if (bannerAds.length > 0) {
+                    const adIndex = index % bannerAds.length;
+                    const randomAdBanner = bannerAds[adIndex];
+                    placeholder.innerHTML = `
+                        <a href="${randomAdBanner.link}" target="_blank" rel="noopener noreferrer">
+                            <img src="${randomAdBanner.img}" alt="Advertisement" style="max-width:100%; height:auto; border-radius: 4px;">
+                        </a>`;
+                } else { placeholder.textContent = 'Advertisement (728x90)'; }
+            });
+
+             // Load Game Page Banner Ad
+             const gamePageBanner = document.getElementById('game-page-banner-ad');
+             if (gamePageBanner && bannerAds.length > 0) {
+                 const randomAdGame = bannerAds[Math.floor(Math.random() * bannerAds.length)];
+                 gamePageBanner.innerHTML = `
+                     <a href="${randomAdGame.link}" target="_blank" rel="noopener noreferrer">
+                         <img src="${randomAdGame.img}" alt="Advertisement" style="max-width:100%; height:auto; border-radius: 4px;">
+                     </a>`;
+             } else if (gamePageBanner) {
+                 gamePageBanner.textContent = 'Advertisement (728x90)';
+             }
+
+             // Load Game Page Sidebar Ad
+             const gameSidebarAd = document.querySelector('.game-page-sidebar-ad');
+             const smallAds = ads.filter(ad => ad.type === 'small');
+             if (gameSidebarAd && smallAds.length > 0) {
+                 const randomSmallAd = smallAds[Math.floor(Math.random() * smallAds.length)];
+                 gameSidebarAd.innerHTML = `
+                     <a href="${randomSmallAd.link}" target="_blank" rel="noopener noreferrer">
+                         <img src="${randomSmallAd.img}" alt="Advertisement">
+                     </a>`;
+             } else if (gameSidebarAd) {
+                 gameSidebarAd.textContent = 'Ad (120x240)';
+             }
+        }
+
+
+        // --- Game Page Functions ---
+        function showGamePage(gameTitle, gameType = 'snake') {
+            siteHeader.style.display = 'none'; mainContent.style.display = 'none';
+            gamePageContainer.style.display = 'block';
+            gamePageTitle.textContent = gameTitle;
+            activeGameType = gameType;
+            updateCreditDisplay();
+            populateOtherGamesList(gameTitle);
+
+            gameTouchControls.style.display = 'none'; slotsControls.style.display = 'none';
+            startGameGamepageBtn.style.display = 'block'; scoreDisplayGamepage.style.display = 'block';
+            gameCanvas.classList.remove('memory-active', 'clicker-active', 'slots-active');
+
+            if (gameType === 'snake') { gamePageDescription.textContent = "The classic Snake game. Eat the food to grow longer, but don't hit the walls or yourself!"; gameControlsText.textContent = "Use Arrow Keys or Tap Controls below."; gameTouchControls.style.display = 'flex'; scoreDisplayGamepage.textContent = `Score: 0`; }
+            else if (gameType === 'memory') { gamePageDescription.textContent = "Find all the matching pairs!"; gameControlsText.textContent = "Click cards to reveal them."; scoreDisplayGamepage.textContent = `Pairs Found: 0 / ${(memoryGridSize * memoryGridSize) / 2}`; gameCanvas.classList.add('memory-active'); }
+            else if (gameType === 'racing') { gamePageDescription.textContent = "Dodge the oncoming obstacles!"; gameControlsText.textContent = "Use Left/Right Arrow Keys + Up to accelerate."; scoreDisplayGamepage.textContent = `Score: 0`; }
+            else if (gameType === 'clicker') { gamePageDescription.textContent = `Click the target as many times as you can in ${clickerGameDuration} seconds!`; gameControlsText.textContent = "Click the target on the canvas."; scoreDisplayGamepage.textContent = `Score: 0 | Time: ${clickerGameDuration}`; gameCanvas.classList.add('clicker-active'); }
+            else if (gameType === 'slots') { gamePageDescription.textContent = "Spin the reels and try your luck!"; gameControlsText.textContent = "Set your bet and spin!"; slotsControls.style.display = 'flex'; startGameGamepageBtn.style.display = 'none'; scoreDisplayGamepage.style.display = 'none'; gameCanvas.classList.add('slots-active'); customBetInput.value = currentBet; }
+            else { gamePageDescription.textContent = "Game description not available."; gameControlsText.textContent = ""; scoreDisplayGamepage.style.display = 'none'; }
+
+            if (gameType !== 'slots') { startGameGamepageBtn.textContent = "▶️ Start Game"; }
+            resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+            drawInitialGameState();
+            loadAds(); // Reload ads for game page context (banner/sidebar)
+        }
+        function hideGamePage() { stopGame(); gamePageContainer.style.display = 'none'; siteHeader.style.display = ''; mainContent.style.display = 'block'; window.removeEventListener('resize', resizeCanvas); activeGameType = null; }
+
+        // --- Canvas and Game Logic ---
+        function resizeCanvas() {
+             const gcWrap = document.getElementById('game-canvas-wrapper'); if (!gcWrap) return;
+             const gameContentRect = gcWrap.getBoundingClientRect(); const headerRect = document.getElementById('game-page-header').getBoundingClientRect();
+             const availableHeight = window.innerHeight - headerRect.height - 64; let availableWidth;
+             if (window.innerWidth >= 992) { const sidebarWidth = document.getElementById('more-games-sidebar').offsetWidth; availableWidth = window.innerWidth - sidebarWidth - 96; }
+             else { availableWidth = window.innerWidth - 32; }
+
+             let targetAspectRatio = 1;
+             if (activeGameType === 'racing') { targetAspectRatio = 9 / 16; }
+             else if (activeGameType === 'slots') { targetAspectRatio = 2 / 1; }
+
+             let w, h;
+             const maxWidthBasedOnHeight = availableHeight * targetAspectRatio;
+             const maxHeightBasedOnWidth = availableWidth / targetAspectRatio;
+             if (maxWidthBasedOnHeight < availableWidth) { h = availableHeight; w = h * targetAspectRatio; }
+             else { w = availableWidth; h = w / targetAspectRatio; }
+
+             if (activeGameType === 'snake') { w = Math.max(snakeGridSize * 5, Math.floor(w / snakeGridSize) * snakeGridSize); h = w; }
+             else if (activeGameType === 'memory') { const cardSizeW = Math.floor(w / memoryGridSize); const cardSizeH = Math.floor(h / memoryGridSize); const cardSize = Math.min(cardSizeW, cardSizeH); w = cardSize * memoryGridSize; h = w; }
+             else { w = Math.max(150, w); h = Math.max(100, h); }
+
+             gameCanvas.width = w; gameCanvas.height = h;
+             canvasWidth = w; canvasHeight = h;
+
+             if (gameCanvas) {
+                 if (activeGameType === 'snake' && gameLoopInterval) { clearCanvas(); drawFoodSnake(); drawSnake(); }
+                 else if (activeGameType === 'memory' && memoryCards.length > 0) { drawMemoryBoard(); }
+                 else if (activeGameType === 'racing' && gameLoopInterval) { drawRacingGame(); }
+                 else if (activeGameType === 'clicker' && gameLoopInterval) { drawClickerGame(); }
+                 else if (activeGameType === 'slots') { drawSlots(); }
+                 else { drawInitialGameState(); }
+             }
+         }
+         function drawInitialGameState() { if (!ctx) ctx = gameCanvas.getContext('2d'); clearCanvas(); if(gameCanvas.width > 50 && gameCanvas.height > 50 && activeGameType !== 'slots') { ctx.fillStyle = 'rgba(255, 255, 255, 0.7)'; ctx.font = '20px "Helvetica Neue", Arial, sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Click Start Game!', gameCanvas.width / 2, gameCanvas.height / 2); } else if (activeGameType === 'slots') { initializeSlotsGame(); drawSlots(); } }
+        function clearCanvas() {
+            if (!ctx) return;
+            const bg1 = getComputedStyle(document.documentElement).getPropertyValue('--game-bg').trim();
+            const bg2 = getComputedStyle(document.documentElement).getPropertyValue('--game-bg-light').trim();
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
+            gradient.addColorStop(0, bg1); gradient.addColorStop(1, bg2);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            if (activeGameType === 'snake' || activeGameType === 'clicker' || activeGameType === 'memory') {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)'; ctx.lineWidth = 1;
+                for (let i = 0; i < Math.max(canvasWidth, canvasHeight); i += 20) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvasHeight); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvasWidth, i); ctx.stroke(); }
+            } else if (activeGameType === 'racing') { /* Road texture in drawRacingGame */ }
+            else if (activeGameType === 'slots') { ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; for(let i=0; i<canvasWidth; i+= 10) { for(let j=0; j<canvasHeight; j+= 10) { if((i/10 + j/10) % 2 === 0) { ctx.fillRect(i, j, 10, 10); } } } }
+         }
+
+        // --- Game Router ---
+        function startGame() {
+            stopGame();
+            let initialized = false;
+            if (activeGameType === 'snake') { initialized = initializeSnakeGame(); if (initialized) { clearCanvas(); gameLoopInterval = setInterval(mainGameLoopSnake, 120); document.addEventListener('keydown', handleKeyPressSnake); activeGameCleanup = () => { clearInterval(gameLoopInterval); gameLoopInterval = null; document.removeEventListener('keydown', handleKeyPressSnake); }; } }
+            else if (activeGameType === 'memory') { initialized = initializeMemoryGame(); if (initialized) { drawMemoryBoard(); gameCanvas.addEventListener('click', handleMemoryClick); activeGameCleanup = () => { gameCanvas.removeEventListener('click', handleMemoryClick); }; } }
+            else if (activeGameType === 'racing') { initialized = initializeRacingGame(); if (initialized) { clearCanvas(); gameLoopInterval = setInterval(mainGameLoopRacing, 1000 / 60); document.addEventListener('keydown', handleKeyPressRacing); document.addEventListener('keyup', handleKeyReleaseRacing); activeGameCleanup = () => { clearInterval(gameLoopInterval); gameLoopInterval = null; document.removeEventListener('keydown', handleKeyPressRacing); document.removeEventListener('keyup', handleKeyReleaseRacing); carMoveLeft = false; carMoveRight = false; carAccelerating = false; }; } }
+            else if (activeGameType === 'clicker') { initialized = initializeClickerGame(); if (initialized) { clearCanvas(); drawClickerGame(); gameLoopInterval = setInterval(mainGameLoopClicker, 1000); gameCanvas.addEventListener('click', handleClickClicker); activeGameCleanup = () => { clearInterval(gameLoopInterval); gameLoopInterval = null; clearTimeout(clickerTargetInterval); gameCanvas.removeEventListener('click', handleClickClicker); }; } }
+            else if (activeGameType === 'slots') { initialized = initializeSlotsGame(); if(initialized) drawSlots(); activeGameCleanup = () => { spinning = false; clearTimeout(gameLoopInterval); gameLoopInterval = null; }; } // Slots don't auto-start loop
+            else { customAlert('Error', 'Unknown game type selected.'); }
+            if (initialized && activeGameType !== 'slots') { startGameGamepageBtn.textContent = "🔄 Restart"; }
+            else if (!initialized) { drawInitialGameState(); startGameGamepageBtn.textContent = "▶️ Start Game"; }
+        }
+        function stopGame() { if (typeof activeGameCleanup === 'function') { activeGameCleanup(); activeGameCleanup = null; } if (gameLoopInterval) { clearInterval(gameLoopInterval); gameLoopInterval = null; } if (activeGameType !== 'slots') { startGameGamepageBtn.textContent = "▶️ Start Game"; } }
+
+        // --- Snake Game Logic ---
+        function initializeSnakeGame() { if (!ctx) ctx = gameCanvas.getContext('2d'); if (!canvasWidth || canvasWidth < snakeGridSize * 5) { return false; } const mid = Math.floor((canvasWidth / snakeGridSize) / 2); const sx = mid * snakeGridSize; const sy = mid * snakeGridSize; snake = [ { x: sx, y: sy } ]; for (let i = 1; i < 4; i++) { if (sx - (snakeGridSize * i) >= 0) snake.push({ x: sx - (snakeGridSize * i), y: sy }); else break; } dx = snakeGridSize; dy = 0; snakeScore = 0; scoreDisplayGamepage.textContent = `Score: ${snakeScore}`; changingDirection = false; createFoodSnake(); return true; }
+        function mainGameLoopSnake() { if (!gameCanvas || !ctx || !snake) { stopGame(); return; } if (checkCollisionSnake()) { const creditsWon = Math.floor(snakeScore / 5); currentCredits += creditsWon; updateCreditDisplay(); stopGame(); showRandomAdPopup(() => { customAlert('Game Over!', `Final Score: ${snakeScore}. You won ${creditsWon} credits!`); drawInitialGameState(); }); return; } changingDirection = false; clearCanvas(); drawFoodSnake(); moveSnake(); drawSnake(); }
+        function drawRectSnake(x, y, color, darkColor) { if (!ctx) return; const gradient = ctx.createLinearGradient(x, y, x + snakeGridSize, y + snakeGridSize); gradient.addColorStop(0, color); gradient.addColorStop(1, darkColor || color); ctx.fillStyle = gradient; const radius = snakeGridSize * 0.2; ctx.beginPath(); ctx.moveTo(x + radius, y); ctx.lineTo(x + snakeGridSize - radius, y); ctx.quadraticCurveTo(x + snakeGridSize, y, x + snakeGridSize, y + radius); ctx.lineTo(x + snakeGridSize, y + snakeGridSize - radius); ctx.quadraticCurveTo(x + snakeGridSize, y + snakeGridSize, x + snakeGridSize - radius, y + snakeGridSize); ctx.lineTo(x + radius, y + snakeGridSize); ctx.quadraticCurveTo(x, y + snakeGridSize, x, y + snakeGridSize - radius); ctx.lineTo(x, y + radius); ctx.quadraticCurveTo(x, y, x + radius, y); ctx.closePath(); ctx.fill(); }
+        function drawSnake() { if (!ctx || !snake) return; const c1 = getComputedStyle(document.documentElement).getPropertyValue('--snake-color').trim(); const c2 = getComputedStyle(document.documentElement).getPropertyValue('--snake-color-dark').trim(); snake.forEach((p, i) => drawRectSnake(p.x, p.y, c1, c2)); }
+        function drawFoodSnake() { if (!ctx || !food) return; const c1 = getComputedStyle(document.documentElement).getPropertyValue('--food-color').trim(); const c2 = getComputedStyle(document.documentElement).getPropertyValue('--food-color-dark').trim(); const gradient = ctx.createRadialGradient(food.x + snakeGridSize / 2, food.y + snakeGridSize / 2, snakeGridSize * 0.1, food.x + snakeGridSize / 2, food.y + snakeGridSize / 2, snakeGridSize / 2); gradient.addColorStop(0, c1); gradient.addColorStop(1, c2); ctx.fillStyle = gradient; ctx.beginPath(); ctx.arc(food.x + snakeGridSize / 2, food.y + snakeGridSize / 2, snakeGridSize / 2.2, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.beginPath(); ctx.arc(food.x + snakeGridSize / 3, food.y + snakeGridSize / 3, snakeGridSize / 5, 0, Math.PI * 2); ctx.fill(); }
+        function moveSnake() { if (!snake || snake.length === 0) return; const h = { x: snake[0].x + dx, y: snake[0].y + dy }; snake.unshift(h); if (food && h.x === food.x && h.y === food.y) { snakeScore += 10; scoreDisplayGamepage.textContent = `Score: ${snakeScore}`; createFoodSnake(); } else { snake.pop(); } }
+        function createFoodSnake() { if (!canvasWidth || !snake) return; let fx, fy; const mx = canvasWidth / snakeGridSize; const my = canvasHeight / snakeGridSize; while (true) { fx = Math.floor(Math.random() * mx) * snakeGridSize; fy = Math.floor(Math.random() * my) * snakeGridSize; if (!snake.some(p => p.x === fx && p.y === fy)) break; } food = { x: fx, y: fy }; }
+        function handleKeyPressSnake(event) { if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) event.preventDefault(); changeDirectionSnake(event.key); }
+        function changeDirectionSnake(key) { if (changingDirection || !gameLoopInterval) return; const u = dy === -snakeGridSize, d = dy === snakeGridSize, l = dx === -snakeGridSize, r = dx === snakeGridSize; let ndx = dx, ndy = dy; if ((key === 'ArrowLeft' || key.toLowerCase() === 'a') && !r) { ndx = -snakeGridSize; ndy = 0; } else if ((key === 'ArrowUp' || key.toLowerCase() === 'w') && !d) { ndx = 0; ndy = -snakeGridSize; } else if ((key === 'ArrowRight' || key.toLowerCase() === 'd') && !l) { ndx = snakeGridSize; ndy = 0; } else if ((key === 'ArrowDown' || key.toLowerCase() === 's') && !u) { ndx = 0; ndy = snakeGridSize; } else { return; } if (dx !== ndx || dy !== ndy) { dx = ndx; dy = newDy; changingDirection = true; } }
+        function checkCollisionSnake() { if (!snake || snake.length === 0 || !canvasWidth) return false; const h = snake[0]; if (h.x < 0 || h.x >= canvasWidth || h.y < 0 || h.y >= canvasHeight) return true; for (let i = 4; i < snake.length; i++) { if (snake[i].x === h.x && snake[i].y === h.y) return true; } return false; }
+
+        // --- Memory Game Logic ---
+        function initializeMemoryGame(grid = 4) { if (!ctx) ctx = gameCanvas.getContext('2d'); memoryGridSize = grid; const numCards = memoryGridSize * memoryGridSize; if (numCards % 2 !== 0 || !canvasWidth) { return false; } const numPairs = numCards / 2; if (numPairs > memorySymbols.length) { return false; } memoryCards = []; memoryRevealedCards = []; memoryMatchedPairs = 0; memoryCanClick = true; scoreDisplayGamepage.textContent = `Pairs Found: 0 / ${numPairs}`; let symbolsForGame = memorySymbols.slice(0, numPairs); let cardValues = [...symbolsForGame, ...symbolsForGame]; for (let i = cardValues.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cardValues[i], cardValues[j]] = [cardValues[j], cardValues[i]]; } const cardSize = canvasWidth / memoryGridSize; for (let i = 0; i < numCards; i++) { memoryCards.push({ value: cardValues[i], isRevealed: false, isMatched: false, x: (i % memoryGridSize) * cardSize, y: Math.floor(i / memoryGridSize) * cardSize, width: cardSize, height: cardSize }); } return true; }
+        function drawMemoryBoard() { if (!ctx) return; clearCanvas(); const cardBackColor = getComputedStyle(document.documentElement).getPropertyValue('--memory-card-back').trim(); const cardBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--memory-card-border').trim(); const cardRevealedColor = getComputedStyle(document.documentElement).getPropertyValue('--memory-card-revealed').trim(); const symbolColor = getComputedStyle(document.documentElement).getPropertyValue('--memory-symbol-color').trim(); memoryCards.forEach(card => { ctx.strokeStyle = cardBorderColor; ctx.lineWidth = 2; ctx.fillStyle = (card.isRevealed || card.isMatched) ? cardRevealedColor : cardBackColor; ctx.fillRect(card.x + 2, card.y + 2, card.width - 4, card.height - 4); ctx.strokeRect(card.x + 2, card.y + 2, card.width - 4, card.height - 4); if (card.isRevealed || card.isMatched) { ctx.fillStyle = symbolColor; ctx.font = `${card.width * 0.6}px Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(card.value, card.x + card.width / 2, card.y + card.height / 2); } }); }
+        function handleMemoryClick(event) { if (!memoryCanClick || !ctx) return; const rect = gameCanvas.getBoundingClientRect(); const scaleX = gameCanvas.width / rect.width; const scaleY = gameCanvas.height / rect.height; const mouseX = (event.clientX - rect.left) * scaleX; const mouseY = (event.clientY - rect.top) * scaleY; for (let i = 0; i < memoryCards.length; i++) { const card = memoryCards[i]; if (!card.isRevealed && !card.isMatched && mouseX >= card.x && mouseX <= card.x + card.width && mouseY >= card.y && mouseY <= card.y + card.height) { card.isRevealed = true; memoryRevealedCards.push(card); drawMemoryBoard(); if (memoryRevealedCards.length === 2) { memoryCanClick = false; const card1 = memoryRevealedCards[0]; const card2 = memoryRevealedCards[1]; if (card1.value === card2.value) { card1.isMatched = true; card2.isMatched = true; memoryMatchedPairs++; scoreDisplayGamepage.textContent = `Pairs Found: ${memoryMatchedPairs} / ${(memoryGridSize * memoryGridSize) / 2}`; memoryRevealedCards = []; memoryCanClick = true; if (memoryMatchedPairs === (memoryGridSize * memoryGridSize) / 2) { const creditsWon = 25; currentCredits += creditsWon; updateCreditDisplay(); stopGame(); showRandomAdPopup(() => { customAlert('You Win!', `Congratulations! You found all pairs and won ${creditsWon} credits!`); startGameGamepageBtn.textContent = "Play Again?"; }); } } else { setTimeout(() => { card1.isRevealed = false; card2.isRevealed = false; memoryRevealedCards = []; drawMemoryBoard(); memoryCanClick = true; }, 1000); } } break; } } }
+
+        // --- Racing Game Logic ---
+        function initializeRacingGame() { if (!ctx) ctx = gameCanvas.getContext('2d'); if (!canvasWidth || !canvasHeight) { return false; } racingScore = 0; obstacles = []; roadOffset = 0; obstacleSpeed = baseSpeed; obstacleSpawnTimer = 0; carMoveLeft = false; carMoveRight = false; carAccelerating = false; const carWidth = canvasWidth * 0.15; const carHeight = carWidth * 1.6; playerCar = { x: canvasWidth / 2 - carWidth / 2, y: canvasHeight - carHeight - 20, width: carWidth, height: carHeight }; scoreDisplayGamepage.textContent = `Score: ${racingScore}`; return true; }
+        function mainGameLoopRacing() { if (!ctx) { stopGame(); return; } let currentSpeed = carAccelerating ? acceleratedSpeed : baseSpeed; movePlayerCar(); moveObstacles(currentSpeed); spawnObstacle(); drawRacingGame(currentSpeed); if (checkCollisionRacing()) { const creditsWon = Math.floor(racingScore / 10); currentCredits += creditsWon; updateCreditDisplay(); stopGame(); showRandomAdPopup(() => { customAlert('Game Over!', `Final Score: ${racingScore}. You won ${creditsWon} credits!`); drawInitialGameState(); }); return; } racingScore++; scoreDisplayGamepage.textContent = `Score: ${racingScore}`; }
+        function drawRacingGame(currentSpeed) { if (!ctx) return; /* Draw Road */ const roadColor = getComputedStyle(document.documentElement).getPropertyValue('--road-color').trim(); const roadGradient = ctx.createLinearGradient(0,0,0,canvasHeight); roadGradient.addColorStop(0, '#666'); roadGradient.addColorStop(1, roadColor); ctx.fillStyle = roadGradient; ctx.fillRect(0, 0, canvasWidth, canvasHeight); /* Draw Stripes */ const stripeWidth = canvasWidth * 0.02; const stripeHeight = canvasHeight * 0.1; const stripeGap = canvasHeight * 0.15; ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--stripe-color').trim(); roadOffset = (roadOffset + currentSpeed) % (stripeHeight + stripeGap); for (let y = -stripeHeight + roadOffset; y < canvasHeight; y += stripeHeight + stripeGap) { ctx.fillRect(canvasWidth / 2 - stripeWidth / 2, y, stripeWidth, stripeHeight); } drawCar(playerCar.x, playerCar.y, playerCar.width, playerCar.height, getComputedStyle(document.documentElement).getPropertyValue('--player-car-color').trim(), getComputedStyle(document.documentElement).getPropertyValue('--player-car-dark').trim()); obstacles.forEach(ob => { drawCar(ob.x, ob.y, ob.width, ob.height, getComputedStyle(document.documentElement).getPropertyValue('--obstacle-car-color').trim(), getComputedStyle(document.documentElement).getPropertyValue('--obstacle-car-dark').trim()); }); }
+        function drawCar(x, y, width, height, color1, color2) { const gradient = ctx.createLinearGradient(x, y, x, y + height); gradient.addColorStop(0, color1); gradient.addColorStop(1, color2); ctx.fillStyle = gradient; const radius = width * 0.15; ctx.beginPath(); ctx.moveTo(x + radius, y); ctx.lineTo(x + width - radius, y); ctx.quadraticCurveTo(x + width, y, x + width, y + radius); ctx.lineTo(x + width, y + height - radius); ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height); ctx.lineTo(x + radius, y + height); ctx.quadraticCurveTo(x, y + height, x, y + height - radius); ctx.lineTo(x, y + radius); ctx.quadraticCurveTo(x, y, x + radius, y); ctx.closePath(); ctx.fill(); ctx.shadowColor = getComputedStyle(document.documentElement).getPropertyValue('--car-shadow').trim(); ctx.shadowBlur = 5; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2; ctx.fill(); ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0; ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; ctx.fillRect(x + width * 0.2, y + height * 0.1, width * 0.15, height * 0.1); ctx.fillRect(x + width * 0.65, y + height * 0.1, width * 0.15, height * 0.1); ctx.fillStyle = 'rgba(255, 0, 0, 0.7)'; ctx.fillRect(x + width * 0.2, y + height * 0.8, width * 0.15, height * 0.1); ctx.fillRect(x + width * 0.65, y + height * 0.8, width * 0.15, height * 0.1); }
+        function movePlayerCar() { if (carMoveLeft && playerCar.x > 0) { playerCar.x -= carSpeed; } if (carMoveRight && playerCar.x < canvasWidth - playerCar.width) { playerCar.x += carSpeed; } }
+        function spawnObstacle() { obstacleSpawnTimer++; const spawnFrequency = Math.max(30, 100 - Math.floor(racingScore / 100)); if (obstacleSpawnTimer > spawnFrequency) { obstacleSpawnTimer = 0; const obWidth = playerCar.width * (0.8 + Math.random() * 0.4); const obHeight = playerCar.height * (0.8 + Math.random() * 0.4); const obX = Math.random() * (canvasWidth - obWidth); obstacles.push({ x: obX, y: -obHeight, width: obWidth, height: obHeight }); } }
+        function moveObstacles(currentSpeed) { obstacles.forEach((ob, i) => { ob.y += currentSpeed; if (ob.y > canvasHeight) { obstacles.splice(i, 1); } }); }
+        function checkCollisionRacing() { for (let ob of obstacles) { if (playerCar.x < ob.x + ob.width && playerCar.x + playerCar.width > ob.x && playerCar.y < ob.y + ob.height && playerCar.y + playerCar.height > ob.y) return true; } return false; }
+        function handleKeyPressRacing(event) { if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') carMoveLeft = true; else if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') carMoveRight = true; else if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') carAccelerating = true; }
+        function handleKeyReleaseRacing(event) { if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') carMoveLeft = false; else if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') carMoveRight = false; else if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') carAccelerating = false; }
+
+        // --- Clicker Game Logic ---
+        function initializeClickerGame() { if (!ctx) ctx = gameCanvas.getContext('2d'); if (!canvasWidth || !canvasHeight) { return false; } clickerScore = 0; clickerTimer = clickerGameDuration; scoreDisplayGamepage.textContent = `Score: ${clickerScore} | Time: ${clickerTimer}`; spawnClickerTarget(); return true; }
+        function drawClickerGame() { if (!ctx) return; clearCanvas(); if (clickerTarget.active) { const c1 = getComputedStyle(document.documentElement).getPropertyValue('--target-color').trim(); const c2 = getComputedStyle(document.documentElement).getPropertyValue('--target-color-dark').trim(); const hlight = getComputedStyle(document.documentElement).getPropertyValue('--target-highlight').trim(); /* Draw concentric circles */ ctx.fillStyle = c2; ctx.beginPath(); ctx.arc(clickerTarget.x, clickerTarget.y, clickerTarget.radius, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = c1; ctx.beginPath(); ctx.arc(clickerTarget.x, clickerTarget.y, clickerTarget.radius * 0.7, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = hlight; ctx.beginPath(); ctx.arc(clickerTarget.x, clickerTarget.y, clickerTarget.radius * 0.4, 0, Math.PI * 2); ctx.fill(); } }
+        function mainGameLoopClicker() { clickerTimer--; scoreDisplayGamepage.textContent = `Score: ${clickerScore} | Time: ${clickerTimer}`; if (clickerTimer <= 0) { const creditsWon = clickerScore; currentCredits += creditsWon; updateCreditDisplay(); stopGame(); showRandomAdPopup(() => { customAlert('Time Up!', `Final Score: ${clickerScore}. You won ${creditsWon} credits!`); clickerTarget.active = false; drawInitialGameState(); }); } }
+        function spawnClickerTarget() { if (!canvasWidth || !canvasHeight) return; const radius = Math.max(15, Math.min(canvasWidth, canvasHeight) * 0.05 + (100 - clickerScore * 2) * 0.05); const minX = radius; const maxX = canvasWidth - radius; const minY = radius; const maxY = canvasHeight - radius; clickerTarget = { x: Math.random() * (maxX - minX) + minX, y: Math.random() * (maxY - minY) + minY, radius: radius, active: true }; drawClickerGame(); clearTimeout(clickerTargetInterval); clickerTargetInterval = setTimeout(() => { if (clickerTarget.active && gameLoopInterval) { spawnClickerTarget(); } }, 2000); }
+        function handleClickClicker(event) { if (!clickerTarget.active || !ctx || !gameLoopInterval) return; const rect = gameCanvas.getBoundingClientRect(); const scaleX = gameCanvas.width / rect.width; const scaleY = gameCanvas.height / rect.height; const mouseX = (event.clientX - rect.left) * scaleX; const mouseY = (event.clientY - rect.top) * scaleY; const distance = Math.sqrt((mouseX - clickerTarget.x)**2 + (mouseY - clickerTarget.y)**2); if (distance <= clickerTarget.radius) { clickerScore++; scoreDisplayGamepage.textContent = `Score: ${clickerScore} | Time: ${clickerTimer}`; clickerTarget.active = false; clearTimeout(clickerTargetInterval); spawnClickerTarget(); } }
+
+        // --- Slots Game Logic ---
+        function initializeSlotsGame() { if (!ctx) ctx = gameCanvas.getContext('2d'); if (!canvasWidth || !canvasHeight) { return false; } reels = [ [slotSymbols[0], slotSymbols[1], slotSymbols[2]], [slotSymbols[3], slotSymbols[4], slotSymbols[5]], [slotSymbols[6], slotSymbols[0], slotSymbols[1]] ]; spinning = false; scoreDisplayGamepage.style.display = 'none'; /* setActiveBetButton(currentBet); */ return true; }
+        function drawSlots() { if (!ctx || !canvasWidth || !canvasHeight) return; clearCanvas(); const reelWidth = canvasWidth / numReels; const symbolSize = Math.min(reelWidth * 0.6, canvasHeight * 0.6); const yOffset = (canvasHeight - symbolSize) / 2; ctx.font = `${symbolSize}px Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; for (let i = 0; i < numReels; i++) { const xOffset = i * reelWidth + reelWidth / 2; const reelBgGradient = ctx.createLinearGradient(i * reelWidth + 5, yOffset - symbolSize * 0.1, i * reelWidth + 5, yOffset + symbolSize * 1.1); reelBgGradient.addColorStop(0, '#fff'); reelBgGradient.addColorStop(0.5, getComputedStyle(document.documentElement).getPropertyValue('--slot-reel-bg').trim()); reelBgGradient.addColorStop(1, '#fff'); ctx.fillStyle = reelBgGradient; ctx.fillRect(i * reelWidth + 5, yOffset - symbolSize * 0.1, reelWidth - 10, symbolSize * 1.2); ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--slot-border').trim(); ctx.strokeRect(i * reelWidth + 5, yOffset - symbolSize * 0.1, reelWidth - 10, symbolSize * 1.2); drawSlotSymbol(reels[i][1], xOffset, yOffset + symbolSize / 2, symbolSize); } ctx.shadowColor = 'rgba(255, 255, 0, 0.7)'; ctx.shadowBlur = 5; ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--slot-win-line').trim(); ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(0, canvasHeight / 2); ctx.lineTo(canvasWidth, canvasHeight / 2); ctx.stroke(); ctx.lineWidth = 1; ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; }
+        function drawSlotSymbol(symbol, x, y, size) { ctx.save(); ctx.translate(x, y); const colors = { '🍒': { main: '#dc143c', dark: '#a00020', stem: '#006400', highlight: '#ff69b4' }, '🍋': { main: '#fffacd', dark: '#f0e68c', highlight: '#ffffff' }, '🍊': { main: '#ffa500', dark: '#cc8400', highlight: '#ffcc80' }, '🍉': { main: '#90ee90', dark: '#2e8b57', rind: '#006400', seed: '#333' }, '⭐': { main: '#ffd700', dark: '#b8860b', highlight: '#fffacd' }, '🔔': { main: '#f0e68c', dark: '#bdb76b', clapper: '#8b4513' }, '💎': { main: '#b0e0e6', dark: '#4682b4', highlight: '#ffffff' } }; const c = colors[symbol] || { main: '#888', dark: '#555', highlight: '#aaa' }; ctx.shadowColor = 'rgba(0,0,0,0.3)'; ctx.shadowBlur = size * 0.05; ctx.shadowOffsetX = size * 0.02; ctx.shadowOffsetY = size * 0.02; if (symbol === '🍒') { ctx.fillStyle = c.main; ctx.strokeStyle = c.dark; ctx.lineWidth = size * 0.03; ctx.beginPath(); ctx.arc(-size * 0.15, size * 0.1, size * 0.18, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(size * 0.15, size * 0.1, size * 0.18, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.strokeStyle = c.stem; ctx.lineWidth = size * 0.05; ctx.beginPath(); ctx.moveTo(0, -size * 0.2); ctx.quadraticCurveTo(-size * 0.1, -size * 0.1, -size * 0.15, size * 0.1 - size * 0.18); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, -size * 0.2); ctx.quadraticCurveTo(size * 0.1, -size * 0.1, size * 0.15, size * 0.1 - size * 0.18); ctx.stroke(); } else if (symbol === '🍋') { ctx.fillStyle = c.main; ctx.strokeStyle = c.dark; ctx.lineWidth = size * 0.03; ctx.beginPath(); ctx.ellipse(0, 0, size * 0.25, size * 0.35, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.fillStyle = c.highlight; ctx.beginPath(); ctx.ellipse(-size*0.08, -size*0.1, size*0.05, size*0.1, Math.PI/4, 0, Math.PI*2); ctx.fill(); } else if (symbol === '🍊') { const grad = ctx.createRadialGradient(0, 0, size * 0.05, 0, 0, size * 0.3); grad.addColorStop(0, c.highlight); grad.addColorStop(0.7, c.main); grad.addColorStop(1, c.dark); ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(0, 0, size * 0.3, 0, Math.PI * 2); ctx.fill(); } else if (symbol === '🍉') { ctx.fillStyle = c.rind; ctx.beginPath(); ctx.arc(0, 0, size * 0.35, 0, Math.PI, false); ctx.fill(); ctx.fillStyle = c.main; ctx.beginPath(); ctx.arc(0, 0, size * 0.3, 0, Math.PI, false); ctx.fill(); ctx.fillStyle = c.seed; ctx.fillRect(-size*0.1, size*0.1, size*0.03, size*0.05); ctx.fillRect(size*0.05, size*0.15, size*0.03, size*0.05); ctx.fillRect(-size*0.02, size*0.05, size*0.03, size*0.05); } else if (symbol === '⭐') { ctx.fillStyle = c.main; ctx.strokeStyle = c.dark; ctx.lineWidth = size * 0.03; ctx.beginPath(); let rot = Math.PI / 2 * 3; let step = Math.PI / 5; let outerR = size * 0.35; let innerR = size * 0.15; ctx.moveTo(0, -outerR); for (let i = 0; i < 5; i++) { ctx.lineTo(Math.cos(rot + step * i) * outerR, Math.sin(rot + step * i) * outerR); ctx.lineTo(Math.cos(rot + step * i + step / 2) * innerR, Math.sin(rot + step * i + step / 2) * innerR); } ctx.closePath(); ctx.fill(); ctx.stroke(); } else if (symbol === '🔔') { ctx.fillStyle = c.main; ctx.strokeStyle = c.dark; ctx.lineWidth = size * 0.03; ctx.beginPath(); ctx.moveTo(-size*0.25, -size*0.2); ctx.lineTo(size*0.25, -size*0.2); ctx.quadraticCurveTo(size*0.25, size*0.2, 0, size*0.3); ctx.quadraticCurveTo(-size*0.25, size*0.2, -size*0.25, -size*0.2); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.fillStyle = c.clapper; ctx.beginPath(); ctx.arc(0, size*0.2, size*0.05, 0, Math.PI*2); ctx.fill(); } else if (symbol === '💎') { ctx.fillStyle = c.main; ctx.strokeStyle = c.dark; ctx.lineWidth = size * 0.02; ctx.beginPath(); ctx.moveTo(0, -size*0.35); ctx.lineTo(size*0.3, 0); ctx.lineTo(0, size*0.35); ctx.lineTo(-size*0.3, 0); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.moveTo(-size*0.2, -size*0.05); ctx.lineTo(size*0.2, -size*0.05); ctx.stroke(); } else { ctx.fillStyle = '#888'; ctx.fillText(symbol, 0, 0); } ctx.restore(); }
+        function spinReels() { if (spinning) return; if (currentCredits < currentBet) { customAlert('Insufficient Credits', `You need ${currentBet} credits to spin.`); return; } spinning = true; currentCredits -= currentBet; updateCreditDisplay(); spinButton.disabled = true; spinButton.textContent = 'Spinning...'; let spinCount = 0; const totalSpins = 15 + Math.random() * 10; gameLoopInterval = setInterval(() => { spinCount++; for (let i = 0; i < numReels; i++) { reels[i] = [ slotSymbols[Math.floor(Math.random() * slotSymbols.length)], slotSymbols[Math.floor(Math.random() * slotSymbols.length)], slotSymbols[Math.floor(Math.random() * slotSymbols.length)] ]; } drawSlots(); if (spinCount >= totalSpins) { clearInterval(gameLoopInterval); gameLoopInterval = null; for (let i = 0; i < numReels; i++) { reels[i][1] = slotSymbols[Math.floor(Math.random() * slotSymbols.length)]; } drawSlots(); checkSlotsWin(); spinning = false; spinButton.disabled = false; spinButton.textContent = 'Spin Reels'; } }, 80); }
+        function checkSlotsWin() { const line = [reels[0][1], reels[1][1], reels[2][1]]; let winAmount = 0; let winMessage = `Lost ${currentBet} credits. Try Again!`; if (line[0] === line[1] && line[1] === line[2]) { switch (line[0]) { case '🍒': winAmount = currentBet * 5; break; case '🍋': winAmount = currentBet * 8; break; case '🍊': winAmount = currentBet * 10; break; case '🍉': winAmount = currentBet * 15; break; case '⭐': winAmount = currentBet * 25; break; case '🔔': winAmount = currentBet * 50; break; case '💎': winAmount = currentBet * 100; break; } } if (winAmount > 0) { winMessage = `You Won ${winAmount} Credits!`; currentCredits += winAmount; updateCreditDisplay(); } setTimeout(() => customAlert(winAmount > 0 ? 'Winner!' : 'Spin Result', winMessage), 200); }
+        // function setActiveBetButton(bet) { /* Removed */ }
+
+        // --- Tipping Function ---
+        function handleTip(tipAmount) { if (currentCredits >= tipAmount) { currentCredits -= tipAmount; updateCreditDisplay(); customAlert('Tip Sent!', `Thank you for tipping ${tipAmount} credits!`); } else { customAlert('Insufficient Credits', `You don't have enough credits to tip ${tipAmount}.`); } }
+
+        // --- Populate More Games List ---
+        function populateOtherGamesList(currentGameTitle) {
+            moreGamesListContainer.innerHTML = ''; // Clear previous list
+            gameCardsNodeList.forEach(card => {
+                const title = card.dataset.title || card.querySelector('.game-title').textContent;
+                if (title === currentGameTitle) return; // Skip current game
+
+                const gameType = card.dataset.game || 'snake';
+                const isPremium = card.classList.contains('is-premium');
+                const thumbUrl = card.dataset.thumbnail || 'https://placehold.co/40x40/cccccc/777777?text=?';
+
+                const listItem = document.createElement('a');
+                listItem.href = '#'; // Prevent page jump
+                listItem.classList.add('more-games-item');
+                listItem.dataset.game = gameType;
+                listItem.dataset.title = title; // Store title for click handler
+                listItem.dataset.premium = isPremium;
+
+                const img = document.createElement('img');
+                img.src = thumbUrl;
+                img.alt = title;
+                img.width = 40;
+                img.height = 40;
+                img.style.objectFit = 'cover'; // Ensure image covers area
+
+                const titleSpan = document.createElement('span');
+                titleSpan.textContent = title;
+
+                listItem.appendChild(img);
+                listItem.appendChild(titleSpan);
+
+                listItem.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    handleGameSwitch(listItem); // Pass the clicked list item
+                });
+
+                moreGamesListContainer.appendChild(listItem);
+            });
+        }
+
+         // --- Handle Switching Games from Sidebar ---
+         function handleGameSwitch(clickedItem) {
+            const title = clickedItem.dataset.title;
+            const gameType = clickedItem.dataset.game;
+            const isPremium = clickedItem.dataset.premium === 'true'; // Convert string to boolean
+
+            let proceedToGame = () => {
+                 // Show ad first, then game page via callback
+                 pendingGameStartInfo = { title, gameType, adCallback: () => showGamePage(title, gameType) };
+                 showRandomAdPopup(pendingGameStartInfo.adCallback); // Use the renamed function
+            };
+
+            if (isPremium) {
+                if (isSubscribed) {
+                    proceedToGame();
+                } else {
+                     customAlert('Subscription Required', `You need to subscribe to play ${title}.`);
+                }
+            } else { // Free game
+                proceedToGame();
+            }
+         }
+
+
+        // --- Event Listeners ---
+        getTokensBtn.addEventListener('click', () => showModal(tokenModal));
+        subscribeBtn.addEventListener('click', () => { if (!isSubscribed) showModal(subscribeModal); else customAlert('Subscription Active', 'You are already subscribed!'); });
+        closeTokenModalBtn.addEventListener('click', () => hideModal(tokenModal));
+        closeSubscribeModalBtn.addEventListener('click', () => hideModal(subscribeModal));
+        closeAlertModalBtn.addEventListener('click', () => hideModal(alertModal));
+        closeAdModalBtn.addEventListener('click', () => {
+            hideModal(adModal); // Use updated hideModal
+            if (pendingGameStartInfo && pendingGameStartInfo.adCallback) {
+                 pendingGameStartInfo.adCallback(); // Execute callback if it exists (e.g., for game over alerts)
+            } else if (pendingGameStartInfo) {
+                 showGamePage(pendingGameStartInfo.title, pendingGameStartInfo.gameType);
+            }
+            pendingGameStartInfo = null; // Clear pending state
+        });
+        window.addEventListener('click', (e) => { if (e.target === tokenModal) hideModal(tokenModal); if (e.target === subscribeModal) hideModal(subscribeModal); if (e.target === alertModal) hideModal(alertModal); if (e.target === adModal) closeAdModalBtn.click(); });
+
+        gameCardsNodeList.forEach(card => {
+            card.addEventListener('click', () => {
+                const title = card.dataset.title || card.querySelector('.game-title').textContent;
+                const gameType = card.dataset.game || 'snake';
+                const isPremium = card.classList.contains('is-premium');
+                let proceedToGame = () => {
+                     // Show ad first, then game page via callback
+                     pendingGameStartInfo = { title, gameType, adCallback: () => showGamePage(title, gameType) };
+                     showRandomAdPopup(pendingGameStartInfo.adCallback); // Use the renamed function
+                };
+
+                if (isPremium) {
+                    if (isSubscribed) {
+                        proceedToGame();
+                    } else {
+                         customAlert('Subscription Required', `You need to subscribe to play ${title}.`);
+                    }
+                } else { // Free game
+                    proceedToGame();
+                }
+            });
+        });
+
+
+        tokenPackages.forEach(package => { package.addEventListener('click', () => { selectedTokenPackage = { amount: parseInt(package.dataset.amount), price: package.dataset.price, element: package }; tokenPackages.forEach(p => p.style.borderColor = 'var(--border-color)'); package.style.borderColor = 'var(--primary-blue)'; tokenPaymentForm.style.display = 'block'; confirmTokenPurchaseBtn.style.display = 'block'; confirmTokenPurchaseBtn.textContent = `Purchase ${selectedTokenPackage.amount} Credits for ${selectedTokenPackage.price}`; tokenPackages.forEach(p => { if(p !== package) p.style.pointerEvents = 'none'; }); }); });
+        subscribeOptions.forEach(option => { option.addEventListener('click', () => { selectedSubscriptionOption = { period: option.dataset.period, price: option.dataset.price, billing: option.dataset.billing, element: option }; subscribeOptions.forEach(o => o.style.borderColor = 'var(--border-color)'); option.style.borderColor = 'var(--primary-blue)'; subscribePaymentForm.style.display = 'block'; confirmSubscriptionBtn.style.display = 'block'; confirmSubscriptionBtn.textContent = `Subscribe ${selectedSubscriptionOption.period} for ${selectedSubscriptionOption.price}`; subscribeOptions.forEach(o => { if(o !== option) o.style.pointerEvents = 'none'; }); }); });
+
+        tokenPaymentForm.addEventListener('submit', (e) => { e.preventDefault(); if (!selectedTokenPackage) return; if (!validatePaymentForm('token-payment-form')) { customAlert('Payment Error', 'Please fill in all payment details.'); return; } const btn = confirmTokenPurchaseBtn; const originalText = btn.textContent; btn.textContent = 'Processing...'; btn.disabled = true; selectedTokenPackage.element.style.pointerEvents = 'none'; setTimeout(() => { currentCredits += selectedTokenPackage.amount; updateCreditDisplay(); hideModal(tokenModal); customAlert('Purchase Successful', `${selectedTokenPackage.amount} credits added!`); btn.textContent = originalText; btn.disabled = false; }, 1500); });
+        subscribePaymentForm.addEventListener('submit', (e) => { e.preventDefault(); if (!selectedSubscriptionOption) return; if (!validatePaymentForm('subscribe-payment-form')) { customAlert('Payment Error', 'Please fill in all payment details.'); return; } const btn = confirmSubscriptionBtn; const originalText = btn.textContent; btn.textContent = 'Processing...'; btn.disabled = true; selectedSubscriptionOption.element.style.pointerEvents = 'none'; setTimeout(() => { isSubscribed = true; updateSubscribeButton(); hideModal(subscribeModal); customAlert('Subscription Successful', `You are now subscribed!`); btn.textContent = originalText; btn.disabled = false; }, 2000); });
+
+        startGameGamepageBtn.addEventListener('click', () => startGame(activeGameType)); // Pass active game type
+        backToMenuGamepageBtn.addEventListener('click', hideGamePage);
+        // Touch controls only work for snake
+        touchUpBtn.addEventListener('click', () => { if(activeGameType === 'snake') changeDirectionSnake('ArrowUp'); });
+        touchLeftBtn.addEventListener('click', () => { if(activeGameType === 'snake') changeDirectionSnake('ArrowLeft'); });
+        touchDownBtn.addEventListener('click', () => { if(activeGameType === 'snake') changeDirectionSnake('ArrowDown'); });
+        touchRightBtn.addEventListener('click', () => { if(activeGameType === 'snake') changeDirectionSnake('ArrowRight'); });
+
+        // Tip Button Listener
+        tipButtonsContainer.addEventListener('click', (e) => { if (e.target.classList.contains('tip-button')) { const tipAmount = parseInt(e.target.dataset.tip); if (!isNaN(tipAmount) && tipAmount > 0) { handleTip(tipAmount); } } });
+
+        // Search Event Listeners
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', (event) => { if (event.key === 'Enter') performSearch(); });
+        searchInput.addEventListener('input', () => { if (searchInput.value.trim() === '') performSearch(); });
+        function performSearch() { const searchTerm = searchInput.value.toLowerCase().trim(); gameCardsNodeList.forEach(card => { const titleElement = card.querySelector('.game-title'); const creatorElement = card.querySelector('.creator-name'); const title = titleElement ? titleElement.textContent.toLowerCase() : ''; const creator = creatorElement ? creatorElement.textContent.toLowerCase() : ''; if (searchTerm === '' || title.includes(searchTerm) || creator.includes(searchTerm)) { card.classList.remove('hidden'); } else { card.classList.add('hidden'); } }); }
+
+        // Slots Controls Listeners
+        setBetButton.addEventListener('click', () => {
+            const betValue = parseInt(customBetInput.value);
+            if (!isNaN(betValue) && betValue > 0) {
+                currentBet = betValue;
+                customAlert('Bet Set', `Current bet set to ${currentBet} credits.`);
+            } else {
+                customAlert('Invalid Bet', 'Please enter a valid positive number for your bet.');
+                customBetInput.value = currentBet; // Reset to previous valid bet
+            }
+        });
+        spinButton.addEventListener('click', spinReels);
+
+
+        // --- Initial Setup ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCreditDisplay(); updateSubscribeButton();
+            loadAds(); // Load initial sidebar ads
+            document.querySelectorAll('.game-card').forEach(card => {
+                if (card.querySelector('.game-status.premium')) card.classList.add('is-premium');
+                const thumbUrl = card.dataset.thumbnail; const thumbDiv = card.querySelector('.game-thumbnail'); if (thumbDiv && thumbUrl) thumbDiv.style.backgroundImage = `url('${thumbUrl}')`; else if (thumbDiv) thumbDiv.style.backgroundImage = `url('https://placehold.co/300x180/cccccc/777777?text=Game')`;
+                const avatar = card.querySelector('.creator-avatar'); if (avatar && !avatar.style.backgroundImage) { const i = card.querySelector('.creator-name')?.textContent?.charAt(0).toUpperCase() || 'G'; avatar.style.backgroundImage = `url('https://placehold.co/24x24/cccccc/777777?text=${i}')`; }
+            });
+            tokenPaymentForm.style.display = 'none';
+            subscribePaymentForm.style.display = 'none';
+         });
+    </script>
+</body>
+</html>
