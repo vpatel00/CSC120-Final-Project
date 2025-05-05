@@ -925,12 +925,12 @@
 
             if (isPremium) {
                 if (isSubscribed) {
-                    window.open('https://www.hennessy.com/en-int', '_blank');
+                    proceedToGame();
                 } else {
-                    window.open('https://www.hennessy.com/en-int', '_blank');
+                    customAlert('Subscription Required', `You need to subscribe to play ${title}.`);
                 }
             } else { // Free game
-                window.open('https://www.hennessy.com/en-int', '_blank');
+                customAlert('Subscription Required', `You need to subscribe to play ${title}.`);
             }
          }
 
@@ -965,12 +965,12 @@
 
                 if (isPremium) {
                     if (isSubscribed) {
-                        window.open('https://www.hennessy.com/en-int', '_blank');
+                        proceedToGame();
                     } else {
-                        window.open('https://www.hennessy.com/en-int', '_blank');
+                        customAlert('Subscription Required', `You need to subscribe to play ${title}.`);
                     }
                 } else { // Free game
-                    window.open('https://www.hennessy.com/en-int', '_blank');
+                    customAlert('Subscription Required', `You need to subscribe to play ${title}.`);
                 }
             });
         });
