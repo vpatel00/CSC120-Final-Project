@@ -405,6 +405,8 @@
 
         <audio id="bgm" src="Main Theme (CD Version) - Bad Piggies.mp3"></audio>
         <audio id="intro-music" src="Cake Race.mp3" preload="auto"></audio>
+        <audio id="victory-music" src="Dating Start! (Beta Version) - Undertale.mp3" preload="auto"></audio>
+
         <div id="message-box">POV: You are getting jumped! UH OH!</div>
        
         <!-- Player -->
@@ -729,8 +731,6 @@ function showNextDialogue() {
         }, 1000); // Match this to the transition time in CSS (1s)
     }
 }
-
-// After the closing brace of showNextDialogue function, add:
 function showVictoryDialogue() {
     // Reset dialogue index
     currentDialogueIndex = 0;
@@ -739,9 +739,16 @@ function showVictoryDialogue() {
     const startDialog = document.getElementById('start-dialog');
     const characterImage = document.getElementById('character-image');
     const bgm = document.getElementById('bgm');
+    const victoryMusic = document.getElementById('victory-music');
     
     // Pause the battle music
     bgm.pause();
+    
+    // Play victory music
+    victoryMusic.volume = 0.8;
+    victoryMusic.play().catch(error => {
+        console.error("Victory music play failed:", error);
+    });
     
     // Show the dialogue container
     startDialog.style.display = 'flex';
@@ -786,6 +793,22 @@ function showVictoryDialogue() {
                 startDialog.style.display = 'none';
                 restartGame();
                 
+                // Stop victory music and restart BGM
+                const victoryMusic = document.getElementById('victory-music');
+                const bgm = document.getElementById('bgm');
+                
+                victoryMusic.pause();
+                victoryMusic.currentTime = 0;
+                
+                // Play battle music again
+                bgm.currentTime = 0;
+                bgm.volume = 0.8;
+                bgm.play().catch(error => {
+                    console.error("Restart BGM failed:", error);
+                    // Try again
+                    setTimeout(() => bgm.play().catch(e => console.error("Retry failed:", e)), 100);
+                });
+                
                 // Reset event listener for future games
                 nextButton.removeEventListener('click', arguments.callee);
                 nextButton.addEventListener('click', showNextDialogue);
@@ -801,7 +824,6 @@ function showVictoryDialogue() {
     // Show the first dialogue
     showNextVictoryDialogue();
 }
-
 
 
 // Set up the dialogue system when the page loads
@@ -848,11 +870,19 @@ function restartGame() {
     // Reset music
     const introMusic = document.getElementById('intro-music');
     const bgm = document.getElementById('bgm');
+    const victoryMusic = document.getElementById('victory-music');
+    
     introMusic.pause();
     introMusic.currentTime = 0;
+    victoryMusic.pause();
+    victoryMusic.currentTime = 0;
+    
     bgm.currentTime = 0;
+    bgm.volume = 0.8;
     bgm.play().catch(error => {
         console.log("Audio playback failed:", error);
+        // Try again
+        setTimeout(() => bgm.play().catch(e => console.error("Retry failed:", e)), 100);
     });
    
     // Update UI
@@ -863,11 +893,6 @@ function restartGame() {
     // Make sure dialogue doesn't show again
     document.getElementById('start-dialog').style.display = 'none';
 }
-
-
-
-
-
 
 
 
