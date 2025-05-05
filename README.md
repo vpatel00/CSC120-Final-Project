@@ -4,4 +4,5 @@ How to run OnlyGames:
 2. Open MainPage.html and choose what you want to play
 ----------------------------------------------------------------
 What is OnlyGames?
-Onlygames takes inspiration from... capitalism and the pursuit of money, giving quality games that includes very unequivocal games that get the message across on what experience they provide.
+
+Onlygames takes inspiration from... capitalism and the pursuit of money, giving quality coded products that includes very "unequivocal games" that get the message across on what experience they provide. 
