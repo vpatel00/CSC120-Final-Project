@@ -1,4 +1,4 @@
-!logo.png
+![Logo](logo.png)
 
 
 How to run OnlyGames:
