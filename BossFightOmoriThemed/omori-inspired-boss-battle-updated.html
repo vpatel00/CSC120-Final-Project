@@ -608,16 +608,16 @@
 
         // Character and dialogue setup
 const dialogueSequence = [
-    { character: "???", text: "Hey! You there! Stop right where you are! I sure hope you dont have audio on, to hear our theme as we slowly approach you that plays when the user hits OK!" },
-    { character: "You", text: "Huh? Who's there? Also, I do hear your loud music." },
-    { character: "Masked Figure", text: "Hand over your valuables. NOW." },
-    { character: "You", text: "I... I don't have anything worth taking!" },
+    { character: "???", text: "Hey! You there! Stop right where you are! I sure hope you dont have audio on, to hear our theme that plays when the user hits OK!" },
+    { character: "Primary Key", text: "Huh? Who's there? Also, I do suddenly hear your loud music after hitting OK..." },
+    { character: "Masked Figure", text: "Hand over your valuables. NOW. Or ill crease your Jordans idk" },
+    { character: "Primary Key", text: "I... I don't have anything worth taking!" },
     { character: "Another Voice", text: "Heh. Wrong answer, buddy." },
-    { character: "You", text: "Wait... I'm surrounded?!" },
-    { character: "Masked Figure", text: "Four against one. Not good odds for you." },
-    { character: "You", text: "..." },
-    { character: "You", text: "(I need to find a way out of this!)" },
-    { character: "???", text: "Let's make this quick." }
+    { character: "Primary Key", text: "Wait... I'm surrounded?!" },
+    { character: "Masked Figure", text: "Four against one. Not good odds for you, buckaroo." },
+    { character: "Primary Key", text: "... Yknow, who does this mugging even benefit." },
+    { character: "Primary Key", text: "(hmmm, I need to find a way out of this! Or else... ill be a a packet, tracer...)" },
+    { character: "???", text: "Let's make this quic... what that joke made no sense huh" }
 ];
 
 
@@ -656,7 +656,7 @@ function showNextDialogue() {
         document.getElementById('dialogue-text').textContent = dialogue.text;
         
         // Change character image based on who is speaking
-        if (dialogue.character === "You") {
+        if (dialogue.character === "Primary Key") {
             characterImage.src = "PrimaryKeyStillImage.jpg";
         } else if (dialogue.character === "Masked Figure") {
             characterImage.src = "Crook1.gif";
