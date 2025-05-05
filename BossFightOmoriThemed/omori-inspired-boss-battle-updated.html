@@ -517,7 +517,7 @@
             player: {
                 health: 100,
                 maxHealth: 100,
-                damage: 7
+                damage: 8
             },
             bosses: [
                 { id: 1, health: 50, maxHealth: 50, energy: 20, maxEnergy: 20, damage: 2 },
@@ -569,8 +569,10 @@
             { question: "Last vibecode, Tyler Ellis did an RPG game.", answer: false },
             { question: "Gavin was at class at 4/30/2025 at 8:05 AM.", answer: false },
             { question: "The Biotechnology field is overrated.", answer: true },
+            { question: "McCuen once told a tale about college sports, where a party won and uprooted a football goal post in celebration.", answer: true },
             { question: "Is the Primary Key a person?", answer: true },
             { question: "Will something like this game happen to you at 11:23 AM?", answer: false },
+            { question: "The Joycons on Marc's switch was blue and red at one point, before they broke?", answer: false },
             { question: "Does Nuno play Chipp in Guilty Gear Strive?", answer: true },
             { question: "Does Marc co-main May in Guilty Gear Strive?", answer: true },
             { question: "Can Tody play Fortnite on school laptop?", answer: true },
@@ -579,7 +581,12 @@
             { question: "They played Fetty Wap at Prom?", answer: true },
             { question: "Yunus brought a mug of coffee in class from the teachers lounge once.", answer: true },
             { question: "Idris once brought in a coconut to first period once.", answer: true },
-            { question: "Syed once brought in Raising Canes on 3/5/2024 at 11:00 AM.", answer: false }
+            { question: "Syed once brought in Raising Canes on 3/5/2024 at 11:00 AM.", answer: false },
+            { question: "Is PI 3.1415926569", answer: false },
+            { question: "Does Nuno own a comically large amount of hand saws?", answer: true },
+            { question: "Can students technically use the staircases at the sides of the building?", answer: true },
+            { question: "If theres a Will there is a way?", answer: true }
+
         ];
 
 
@@ -618,6 +625,20 @@ const dialogueSequence = [
     { character: "Primary Key", text: "..." },
     { character: "Primary Key", text: "(I need to find a way out of this! Or else... ill be a...a packet, tracer...)" },
     { character: "???", text: "Let's make this quic... what that joke made no sense huh" }
+];
+
+const victoryDialogueSequence = [
+    { character: "Crook1", text: "Agh! How is this possible?! This guys hacking, mods ban him!!1!" },
+    { character: "Crook2", text: "We had them outnumbered... how did my team throw the game this badly..." },
+    { character: "Crook3", text: "This is why my squad ranked silver two this matchmaking system some dogwater bruh." },
+    { character: "Crook4", text: "Boss isn't going to be happy about this... I needed that money to gamble..." },
+    { character: "Primary Key", text: "Heh..Maybe next time pick on someone who doesn't know their SQL queries." },
+    { character: "Crook1", text: "What, did... did we mess with... the...?!" },
+    { character: "Primary Key", text: "You did. They call me... the Primary Key." },
+    { character: "Crook2", text: "The Primary... Key? Impossble! Ive heard rumors about this key, from Mr. Cisco himself." },
+    { character: "Primary Key", text: "You shouldve known. You have two eyes, two ears and two mout... or something." },
+    { character: "Crook3", text: "Let's get out of here! This isn't over!" },
+    { character: "Primary Key", text: "Looks like Primary Key... primarily wins again." }
 ];
 
 
@@ -665,7 +686,7 @@ function showNextDialogue() {
         } else if (dialogue.character === "???") {
             characterImage.src = "Crook3.gif";
         } else {
-            characterImage.src = "Crook2.gif"; // Default character
+            characterImage.src = "PrimaryKeyStillImage.jpg"; // Default character
         }
         
         // Remove all background class changes - we'll use a single background
@@ -709,6 +730,77 @@ function showNextDialogue() {
     }
 }
 
+// After the closing brace of showNextDialogue function, add:
+function showVictoryDialogue() {
+    // Reset dialogue index
+    currentDialogueIndex = 0;
+    
+    // Set up the dialogue elements
+    const startDialog = document.getElementById('start-dialog');
+    const characterImage = document.getElementById('character-image');
+    const bgm = document.getElementById('bgm');
+    
+    // Pause the battle music
+    bgm.pause();
+    
+    // Show the dialogue container
+    startDialog.style.display = 'flex';
+    
+    // Create a function to show the next victory dialogue
+    function showNextVictoryDialogue() {
+        if (currentDialogueIndex < victoryDialogueSequence.length) {
+            const dialogue = victoryDialogueSequence[currentDialogueIndex];
+            
+            // Update character name and text
+            document.getElementById('character-name').textContent = dialogue.character;
+            document.getElementById('dialogue-text').textContent = dialogue.text;
+            
+            // Change character image based on who is speaking
+            if (dialogue.character === "Primary Key") {
+                characterImage.src = "PrimaryKeyStillImage.jpg";
+            } else if (dialogue.character === "Crook1") {
+                characterImage.src = "Crook1.gif";
+            } else if (dialogue.character === "Crook2") {
+                characterImage.src = "Crook2.gif";
+            } else if (dialogue.character === "Crook3") {
+                characterImage.src = "Crook3.gif";
+            } else if (dialogue.character === "Crook4") {
+                characterImage.src = "Crook4.gif";
+            }
+            
+            currentDialogueIndex++;
+        } else {
+            // End of dialogue sequence, show "Play Again?" button
+            document.getElementById('character-name').textContent = "Game Over";
+            document.getElementById('dialogue-text').textContent = "Congratulations! You've defeated the crooks!";
+            
+            // Change the "OK" button to "Play Again"
+            const nextButton = document.getElementById('next-dialogue');
+            nextButton.textContent = "Play Again?";
+            nextButton.removeEventListener('click', showNextVictoryDialogue);
+            nextButton.addEventListener('click', function() {
+                // Reset button text
+                nextButton.textContent = "OK";
+                
+                // Hide dialogue and restart game
+                startDialog.style.display = 'none';
+                restartGame();
+                
+                // Reset event listener for future games
+                nextButton.removeEventListener('click', arguments.callee);
+                nextButton.addEventListener('click', showNextDialogue);
+            });
+        }
+    }
+    
+    // Set up the event listener for the dialogue
+    const nextButton = document.getElementById('next-dialogue');
+    nextButton.removeEventListener('click', showNextDialogue);
+    nextButton.addEventListener('click', showNextVictoryDialogue);
+    
+    // Show the first dialogue
+    showNextVictoryDialogue();
+}
 
 
 
@@ -1049,16 +1141,17 @@ function restartGame() {
 
 
         // End the game
+        // Replace your current endGame function with this:
         function endGame(playerWon) {
             gameState.gameOver = true;
-           
+            
             if (playerWon) {
-                gameOverMessage.textContent = 'You Won!';
+                // Call the victory dialogue instead of showing game over screen
+                showVictoryDialogue();
             } else {
                 gameOverMessage.textContent = 'Game Over';
+                gameOverScreen.style.display = 'flex';
             }
-           
-            gameOverScreen.style.display = 'flex';
         }
 
 
